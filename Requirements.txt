@@ -1,7 +1,0 @@
-streamlit
-numpy
-scipy
-pysoundfile
-librosa==0.10.1
-matplotlib
-
