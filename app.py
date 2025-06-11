@@ -8,7 +8,7 @@ import os
 
 st.set_page_config(layout="wide")
 
-# Load background CSS with embedded image
+# Apply background and styles
 def local_css_with_bg(image_path):
     if not os.path.exists(image_path):
         st.error(f"Background image not found: {image_path}")
@@ -61,24 +61,26 @@ def local_css_with_bg(image_path):
     </style>
     """, unsafe_allow_html=True)
 
-# Load custom style
 local_css_with_bg("background.jpg")
 
-# Set page state
+# Page state
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# Home Page
+# Homepage
 def show_homepage():
     st.markdown("""
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
-        <form action="?equalizer">
-            <button class="start-button" type="submit">🎵 Start Now</button>
-        </form>
+        <button class="start-button" onclick="document.dispatchEvent(new Event('startEqualizer'))">🎵 Start Now</button>
     </div>
     """, unsafe_allow_html=True)
+
+    # Fallback for Streamlit rerun when JS doesn't work
+    if st.button("🎵 Start Now"):
+        st.session_state.page = "equalizer"
+        st.experimental_rerun()
 
 # Equalizer Page
 def show_equalizer():
@@ -114,15 +116,12 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Equalized Audio", f, "equalized_output.wav")
 
-# Navigation based on URL
-if "equalizer" in st.query_params:
-    st.session_state.page = "equalizer"
-
-# Show page
+# Route based on session state
 if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
