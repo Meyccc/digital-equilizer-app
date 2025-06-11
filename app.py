@@ -1,110 +1,123 @@
 import streamlit as st
 import numpy as np
+import librosa
 import soundfile as sf
 from scipy.signal import firwin, lfilter
-import io
-import librosa
 import matplotlib.pyplot as plt
+import os
 
-# --- Custom CSS for styling and background ---
-st.markdown(
-    """
+st.set_page_config(layout="wide")
+
+# Load CSS styling
+def local_css():
+    st.markdown("""
     <style>
     body {
-        background-image: url('studio.jpeg');
+        background-color: #0d0d0d;
+    }
+    .main {
+        background: url('background.jpg') no-repeat center center fixed;
         background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
     }
-    .stApp {
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 2rem;
-        border-radius: 15px;
-    }
-    h1, h2, h3, label {
-        color: #FFD700;
-    }
-    .stButton>button {
-        background-color: #FFD700;
-        color: black;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 0.5em 1.5em;
-        border-radius: 10px;
-    }
-    .stSlider>div {
+    .start-button {
+        font-size: 1.3rem;
+        border-radius: 40px;
+        padding: 0.6em 1.8em;
+        background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .start-button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(to right, #ec4899, #a855f7);
+    }
+    .centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
     }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+    """, unsafe_allow_html=True)
 
-# --- Session state to handle home page logic ---
+local_css()
+
+# Session state for navigation
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-def load_audio(file):
-    y, sr = librosa.load(file, sr=None, mono=True)
-    return y, sr
+# Homepage
+def show_homepage():
+    st.markdown(f"""
+    <div class="centered">
+        <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
+        <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
+        <button class="start-button" onclick="window.location.reload();">
+            Start Now
+        </button>
+    </div>
+    """, unsafe_allow_html=True)
 
-def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
-    taps = firwin(numtaps, [lowcut, highcut], pass_zero=False, fs=fs)
-    return lfilter(taps, 1.0, data)
+    # JS to switch session state
+    st.markdown("""
+    <script>
+    const btn = window.parent.document.querySelector(".start-button");
+    btn.onclick = () => {
+        fetch("/_stcore/streamlit/message?streamlit_client=true", {
+            method: "POST",
+            body: JSON.stringify({ "type": "customEvent", "data": "go-to-equalizer" })
+        });
+    };
+    </script>
+    """, unsafe_allow_html=True)
 
-def apply_equalizer(data, fs, gains):
-    bands = [(60, 250), (250, 4000), (4000, 10000)]  # Bass, Mid, Treble
-    processed = np.zeros_like(data)
-    for (low, high), gain in zip(bands, gains):
-        filtered = bandpass_filter(data, low, high, fs)
-        processed += filtered * gain
-    return processed
+# Equalizer UI
+def show_equalizer():
+    st.title("🎛️ Music Equalizer")
 
-# --- Home Page ---
+    audio_file = st.file_uploader("Upload Audio", type=["mp3", "wav"])
+    bass_gain = st.slider("Bass Gain", -20, 20, 0)
+    mid_gain = st.slider("Mid Gain", -20, 20, 0)
+    treble_gain = st.slider("Treble Gain", -20, 20, 0)
+
+    if audio_file:
+        y, sr = librosa.load(audio_file, sr=None, mono=True)
+
+        def apply_filter(y, sr, band, gain_db):
+            if band == 'bass':
+                b = firwin(numtaps=101, cutoff=200, fs=sr, pass_zero='lowpass')
+            elif band == 'mid':
+                b = firwin(numtaps=101, cutoff=[200, 2000], fs=sr, pass_zero='bandpass')
+            else:
+                b = firwin(numtaps=101, cutoff=2000, fs=sr, pass_zero='highpass')
+            filtered = lfilter(b, [1.0], y)
+            gain = 10 ** (gain_db / 20)
+            return filtered * gain
+
+        bass = apply_filter(y, sr, 'bass', bass_gain)
+        mid = apply_filter(y, sr, 'mid', mid_gain)
+        treble = apply_filter(y, sr, 'treble', treble_gain)
+
+        y_eq = bass + mid + treble
+        st.audio(y_eq, sample_rate=sr)
+
+        sf.write("output.wav", y_eq, sr)
+        with open("output.wav", "rb") as f:
+            st.download_button("Download Modified Audio", f, "equalized_output.wav")
+
+# Listen for navigation trigger
 if st.session_state.page == "home":
-    st.markdown("<h1 style='text-align: center;'>🎛️ Welcome to Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center;'>Enhance your sound. Adjust bass, mids, and treble effortlessly.</h3>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🎧 Start Now"):
-        st.session_state.page = "equalizer"
-        st.experimental_rerun()
+    show_homepage()
 
-# --- Equalizer Page ---
-elif st.session_state.page == "equalizer":
-    st.title("🎚️ Digital Music Equalizer")
+st.experimental_data_editor({"_type": "customEvent"}, key="start-trigger", on_change=lambda: st.session_state.update(page="equalizer"))
 
-    uploaded_file = st.file_uploader("Upload audio file (WAV or MP3)", type=["wav", "mp3"])
-
-    if uploaded_file is not None:
-        file_size_mb = uploaded_file.size / (1024 * 1024)
-        if file_size_mb > 100:
-            st.error("⚠️ File size exceeds 100 MB limit. Please upload a smaller file.")
-        else:
-            data, fs = load_audio(uploaded_file)
-            st.audio(uploaded_file)
-
-            st.subheader("Adjust Frequency Bands 🎚️")
-            bass = st.slider("🎵 Bass (60–250 Hz)", 0.0, 2.0, 1.0, 0.1)
-            mid = st.slider("🎶 Midrange (250 Hz – 4 kHz)", 0.0, 2.0, 1.0, 0.1)
-            treble = st.slider("🎼 Treble (4–10 kHz)", 0.0, 2.0, 1.0, 0.1)
-
-            output = apply_equalizer(data, fs, [bass, mid, treble])
-
-            buf = io.BytesIO()
-            sf.write(buf, output, fs, format='WAV')
-            st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
-
-            st.subheader("Waveform Visualization 📊")
-            fig, ax = plt.subplots(figsize=(10, 3))
-            time = np.linspace(0, len(output) / fs, num=len(output))
-            ax.plot(time, output, color="gold", linewidth=0.5)
-            ax.set_facecolor("black")
-            fig.patch.set_facecolor("black")
-            ax.set_xlabel("Time [s]", color='white')
-            ax.set_ylabel("Amplitude", color='white')
-            ax.set_title("Processed Audio Waveform", color='gold')
-            ax.tick_params(colors='white')
-            st.pyplot(fig)
+if st.session_state.page == "equalizer":
+    show_equalizer()
 
 
