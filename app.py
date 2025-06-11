@@ -48,13 +48,14 @@ def local_css_with_bg(image_path):
         font-size: 1.3rem;
         color: #ec4899;
         font-weight: 600;
+        margin-top: 1.2rem;
     }}
     </style>
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
 # Apply custom CSS
-local_css_with_bg("background.jpg")
+local_css_with_bg("background.jpg")  # make sure this matches your image filename
 
 # Page state
 if "page" not in st.session_state:
@@ -66,14 +67,9 @@ def show_homepage():
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
-        <form action="" method="post">
-            <button class="start-button" type="submit" name="start">🎵 Start Now</button>
-        </form>
+        <button class="start-button" onclick="window.location.href='?start=1'">🎵 Start Now</button>
     </div>
     """, unsafe_allow_html=True)
-
-    if st.session_state.get("start"):
-        st.session_state.page = "equalizer"
 
 # Equalizer UI
 def show_equalizer():
@@ -120,13 +116,15 @@ def show_equalizer():
             st.download_button("Download Modified Audio", f, "equalized_output.wav")
 
 # Routing
+# This handles query param ?start=1 to move to equalizer
+if st.query_params.get("start") == "1":
+    st.session_state.page = "equalizer"
+
 if st.session_state.page == "home":
-    if "start" in st.query_params:
-        st.session_state.page = "equalizer"
-    else:
-        show_homepage()
+    show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
