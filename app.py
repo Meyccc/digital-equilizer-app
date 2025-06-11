@@ -3,7 +3,6 @@ import numpy as np
 import librosa
 import soundfile as sf
 from scipy.signal import firwin, lfilter
-import matplotlib.pyplot as plt
 import base64
 
 st.set_page_config(layout="wide")
@@ -30,6 +29,7 @@ def local_css_with_bg(image_path):
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
+        margin-top: 20px;
     }}
     .start-button:hover {{
         transform: scale(1.05);
@@ -54,10 +54,10 @@ def local_css_with_bg(image_path):
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
-# Apply custom CSS
-local_css_with_bg("background.jpg")  # make sure this matches your image filename
+# Apply CSS
+local_css_with_bg("background.jpg")  # Ensure your image is named exactly this
 
-# Page state
+# Session state setup
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
@@ -67,11 +67,15 @@ def show_homepage():
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="window.location.href='?start=1'">🎵 Start Now</button>
     </div>
     """, unsafe_allow_html=True)
 
-# Equalizer UI
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        if st.button("🎵 Start Now", key="start", help="Begin audio equalization"):
+            st.session_state.page = "equalizer"
+
+# Equalizer
 def show_equalizer():
     st.markdown("<h1 style='color:white; font-size:2.5rem;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
 
@@ -115,15 +119,12 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Modified Audio", f, "equalized_output.wav")
 
-# Routing
-# This handles query param ?start=1 to move to equalizer
-if st.query_params.get("start") == "1":
-    st.session_state.page = "equalizer"
-
+# Route
 if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
