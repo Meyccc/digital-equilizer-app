@@ -8,7 +8,7 @@ import os
 
 st.set_page_config(layout="wide")
 
-# Apply background and styles
+# Load background CSS
 def local_css_with_bg(image_path):
     if not os.path.exists(image_path):
         st.error(f"Background image not found: {image_path}")
@@ -42,6 +42,7 @@ def local_css_with_bg(image_path):
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
+        margin-top: 1.5rem;
     }}
     .start-button:hover {{
         transform: scale(1.05);
@@ -51,7 +52,7 @@ def local_css_with_bg(image_path):
         text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
     }}
     .stSlider > div {{
-        height: 45px;
+        height: 50px;
     }}
     .stSlider label {{
         font-size: 1.2rem !important;
@@ -63,7 +64,7 @@ def local_css_with_bg(image_path):
 
 local_css_with_bg("background.jpg")
 
-# Page state
+# Session state for routing
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
@@ -73,16 +74,17 @@ def show_homepage():
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="document.dispatchEvent(new Event('startEqualizer'))">🎵 Start Now</button>
     </div>
     """, unsafe_allow_html=True)
 
-    # Fallback for Streamlit rerun when JS doesn't work
-    if st.button("🎵 Start Now"):
-        st.session_state.page = "equalizer"
-        st.experimental_rerun()
+    # Proper Streamlit button
+    col = st.columns(3)[1]
+    with col:
+        if st.button("🎵 Start Now", key="start_button"):
+            st.session_state.page = "equalizer"
+            st.experimental_rerun()
 
-# Equalizer Page
+# Equalizer
 def show_equalizer():
     st.title("🎛️ Digital Music Equalizer")
 
@@ -116,11 +118,12 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Equalized Audio", f, "equalized_output.wav")
 
-# Route based on session state
+# Routing
 if st.session_state.page == "home":
     show_homepage()
-elif st.session_state.page == "equalizer":
+else:
     show_equalizer()
+
 
 
 
