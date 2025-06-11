@@ -4,22 +4,23 @@ import librosa
 import soundfile as sf
 from scipy.signal import firwin, lfilter
 import matplotlib.pyplot as plt
-import os
+import base64
 
 st.set_page_config(layout="wide")
 
-# Load CSS styling
-def local_css():
-    st.markdown("""
+# Load CSS styling with embedded background
+def local_css_with_bg(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded = base64.b64encode(image_file.read()).decode()
+    background_css = f"""
     <style>
-    body {
-        background-color: #0d0d0d;
-    }
-    .main {
-        background: url('background.jpg') no-repeat center center fixed;
+    .stApp {{
+        background-image: url("data:image/jpg;base64,{encoded}");
         background-size: cover;
-    }
-    .start-button {
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    .start-button {{
         font-size: 1.3rem;
         border-radius: 40px;
         padding: 0.6em 1.8em;
@@ -28,12 +29,12 @@ def local_css():
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-    }
-    .start-button:hover {
+    }}
+    .start-button:hover {{
         transform: scale(1.05);
         background: linear-gradient(to right, #ec4899, #a855f7);
-    }
-    .centered {
+    }}
+    .centered {{
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -42,13 +43,15 @@ def local_css():
         text-align: center;
         color: white;
         font-family: 'Segoe UI', sans-serif;
-    }
+    }}
     </style>
-    """, unsafe_allow_html=True)
+    """
+    st.markdown(background_css, unsafe_allow_html=True)
 
-local_css()
+# Apply custom CSS
+local_css_with_bg("background.jpg")
 
-# Session state for navigation
+# Page state
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
@@ -58,24 +61,11 @@ def show_homepage():
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="window.location.reload();">
-            Start Now
-        </button>
     </div>
     """, unsafe_allow_html=True)
 
-    # JS to switch session state
-    st.markdown("""
-    <script>
-    const btn = window.parent.document.querySelector(".start-button");
-    btn.onclick = () => {
-        fetch("/_stcore/streamlit/message?streamlit_client=true", {
-            method: "POST",
-            body: JSON.stringify({ "type": "customEvent", "data": "go-to-equalizer" })
-        });
-    };
-    </script>
-    """, unsafe_allow_html=True)
+    if st.button("🎵 Start Now", key="start_button"):
+        st.session_state.page = "equalizer"
 
 # Equalizer UI
 def show_equalizer():
@@ -111,13 +101,10 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Modified Audio", f, "equalized_output.wav")
 
-# Listen for navigation trigger
+# Route app
 if st.session_state.page == "home":
     show_homepage()
-
-st.experimental_data_editor({"_type": "customEvent"}, key="start-trigger", on_change=lambda: st.session_state.update(page="equalizer"))
-
-if st.session_state.page == "equalizer":
+elif st.session_state.page == "equalizer":
     show_equalizer()
 
 
