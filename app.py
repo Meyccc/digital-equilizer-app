@@ -3,15 +3,16 @@ import numpy as np
 import librosa
 import soundfile as sf
 from scipy.signal import firwin, lfilter
+import matplotlib.pyplot as plt
 import base64
 
 st.set_page_config(layout="wide")
 
-# Load CSS styling with embedded background
+# ---- Load CSS with background and style ----
 def local_css_with_bg(image_path):
     with open(image_path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
-    background_css = f"""
+    css = f"""
     <style>
     .stApp {{
         background-image: url("data:image/jpg;base64,{encoded}");
@@ -19,99 +20,92 @@ def local_css_with_bg(image_path):
         background-position: center;
         background-repeat: no-repeat;
     }}
-    .hero {{
-        height: 100vh;
+    .centered {{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        height: 100vh;
         text-align: center;
         color: white;
         font-family: 'Segoe UI', sans-serif;
-        padding: 0 2rem;
-    }}
-    .hero h1 {{
-        font-size: 4rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-    }}
-    .hero p {{
-        font-size: 1.25rem;
-        font-weight: 400;
-        margin-bottom: 2.5rem;
-        letter-spacing: 1px;
     }}
     .start-button {{
-        font-size: 1.2rem;
-        padding: 0.75em 2em;
-        border: none;
-        border-radius: 50px;
+        font-size: 1.3rem;
+        border-radius: 40px;
+        padding: 0.6em 2em;
         background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
+        border: none;
         cursor: pointer;
         transition: all 0.3s ease;
+        margin-top: 1.5rem;
     }}
     .start-button:hover {{
         transform: scale(1.05);
         background: linear-gradient(to right, #ec4899, #a855f7);
     }}
-
-    /* Equalizer styling */
-    .custom-title {{
-        font-size: 3rem;
-        font-weight: bold;
-        color: #ffffff;
-        text-align: center;
-        margin-top: 1rem;
-        font-family: 'Segoe UI', sans-serif;
+    .navbar {{
+        background-color: rgba(0,0,0,0.7);
+        padding: 0.75rem 2rem;
+        border-bottom: 1px solid #444;
+        color: white;
+        font-size: 1.1rem;
     }}
     .stSlider > div {{
-        padding: 10px 0px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }}
-    .stSlider .css-14g5w8i, .stSlider .css-1r6slb0 {{
-        background: linear-gradient(to right, #a855f7, #ec4899);
-        border-radius: 12px;
+    .stSlider label {{
+        font-size: 1.2rem !important;
+        color: white !important;
+    }}
+    .stSlider .css-1n76uvr {{
+        font-size: 1.1rem !important;
+        color: #f0a3f6 !important;
+    }}
+    .stSlider .st-cf {{
         height: 10px;
     }}
-    .stSlider .css-1c5h37h {{
-        background-color: #1f2937;
-        border-radius: 12px;
+    .stSlider .st-cg {{
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(to right, #a855f7, #ec4899);
+        border: none;
     }}
     </style>
     """
-    st.markdown(background_css, unsafe_allow_html=True)
+    st.markdown(css, unsafe_allow_html=True)
 
-# Apply custom background
-local_css_with_bg("background.jpg")
+local_css_with_bg("home background.jpg")
 
-# Session state for page navigation
+# ---- Routing state ----
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# Homepage
+# ---- Homepage ----
 def show_homepage():
     st.markdown("""
-    <div class="hero">
-        <h1>🎧 Digital Music Equalizer</h1>
-        <p>Shape your sound with studio-level precision</p>
+    <div class="centered">
+        <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
+        <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
+        <form action="" method="post">
+            <button class="start-button" name="start" type="submit">🎵 Start Now</button>
+        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    # Center the button using Streamlit layout
-    col1, col2, col3 = st.columns([3, 2, 3])
-    with col2:
-        if st.button("🎵 Start Now", key="start_button"):
-            st.session_state.page = "equalizer"
-
-# Equalizer Page
+# ---- Equalizer Page ----
 def show_equalizer():
-    st.markdown('<div class="custom-title">🎚️ Music Equalizer</div>', unsafe_allow_html=True)
+    st.markdown('<div class="navbar">🎛️ Music Equalizer</div>', unsafe_allow_html=True)
+    st.markdown("## Upload Your Audio and Adjust Equalizer")
 
-    audio_file = st.file_uploader("🎵 Upload Your Music File", type=["mp3", "wav"])
-    bass_gain = st.slider("Bass Gain", -20, 20, 0, key="bass")
-    mid_gain = st.slider("Mid Gain", -20, 20, 0, key="mid")
-    treble_gain = st.slider("Treble Gain", -20, 20, 0, key="treble")
+    audio_file = st.file_uploader("🎵 Upload Audio", type=["mp3", "wav"])
+
+    with st.container():
+        bass_gain = st.slider("🔊 Bass Gain", -20, 20, 0)
+        mid_gain = st.slider("🎶 Mid Gain", -20, 20, 0)
+        treble_gain = st.slider("🎵 Treble Gain", -20, 20, 0)
 
     if audio_file:
         y, sr = librosa.load(audio_file, sr=None, mono=True)
@@ -130,16 +124,33 @@ def show_equalizer():
         bass = apply_filter(y, sr, 'bass', bass_gain)
         mid = apply_filter(y, sr, 'mid', mid_gain)
         treble = apply_filter(y, sr, 'treble', treble_gain)
-
         y_eq = bass + mid + treble
+
+        st.markdown("### 🎧 Original Audio")
+        st.audio(audio_file)
+
+        st.markdown("### 🎚️ Equalized Audio")
         st.audio(y_eq, sample_rate=sr)
+
+        # Waveform Visualization
+        st.markdown("### 🔍 Audio Waveforms")
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.plot(y, alpha=0.5, label="Original", color='gray')
+        ax.plot(y_eq, alpha=0.7, label="Equalized", color='#a855f7')
+        ax.set_title("Waveform Comparison", color='white')
+        ax.set_facecolor("#111")
+        ax.tick_params(colors='white')
+        ax.legend()
+        st.pyplot(fig)
 
         sf.write("output.wav", y_eq, sr)
         with open("output.wav", "rb") as f:
             st.download_button("⬇️ Download Modified Audio", f, "equalized_output.wav")
 
-# Page router
+# ---- Routing logic ----
 if st.session_state.page == "home":
+    if st.form_submit_button("start"):
+        st.session_state.page = "equalizer"
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
