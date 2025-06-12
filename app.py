@@ -33,7 +33,7 @@ st.markdown("""
         background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
         border: none !important;
         padding: 0.8em 2em !important;
-        font-size: 1.2em !important;
+        font-size: 2.2em !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 20px !important;
@@ -56,7 +56,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 85vh;
+        height: 70vh;
         text-align: center;
     }
 
@@ -71,25 +71,6 @@ st.markdown("""
         font-size: 1.8em;
         color: #dddddd;
         margin-bottom: 2em;
-    }
-
-    .start-button {
-        background: linear-gradient(90deg, #ff5f6d, #845ec2);
-        border: none;
-        padding: 0.8em 2em;
-        font-size: 1.2em;
-        color: white;
-        font-weight: bold;
-        border-radius: 20px;
-        box-shadow: 0 0 12px #ff69b4;
-        transition: background 0.3s ease;
-        margin-top: 1.5em;
-        cursor: pointer;
-    }
-
-    .start-button:hover {
-        background: linear-gradient(90deg, #845ec2, #ff5f6d);
-        color: black;
     }
 
     .stSlider > div {
@@ -146,15 +127,14 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-            <form action="" method="post">
-                <button type="submit" class="start-button">🚀 Start Now</button>
-            </form>
         </div>
     """, unsafe_allow_html=True)
 
-    if st.form_submit_button("🚀 Start Now", key="start_home"):
-        st.session_state.page = "about"
-        st.rerun()
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🚀 Start Now", key="start_home"):
+            st.session_state.page = "about"
+            st.rerun()
 
 # --- About Page ---
 elif st.session_state.page == "about":
