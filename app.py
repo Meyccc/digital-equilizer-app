@@ -70,7 +70,7 @@ st.markdown("""
     .home-description {
         font-size: 1.8em;
         color: #dddddd;
-        margin-bottom: 2em;
+        margin-bottom: 1.5em;
     }
 
     .stSlider > div {
@@ -130,11 +130,12 @@ if st.session_state.page == "home":
         </div>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🚀 Start Now", key="start_home"):
-            st.session_state.page = "about"
-            st.rerun()
+    # Button right under the title and description
+    st.markdown("<div style='text-align:center; margin-top:-2em;'>", unsafe_allow_html=True)
+    if st.button("🚀 Start Now", key="start_home"):
+        st.session_state.page = "about"
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -204,6 +205,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
