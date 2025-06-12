@@ -33,7 +33,7 @@ st.markdown("""
         background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
         border: none !important;
         padding: 0.8em 2.5em !important;
-        font-size: 1.6em !important;
+        font-size: 1.0em !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 20px !important;
