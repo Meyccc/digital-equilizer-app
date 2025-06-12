@@ -34,6 +34,10 @@ st.markdown("""
         font-family: 'Orbitron', sans-serif;
     }
 
+    section[data-testid="stSidebar"] {
+        background-color: #2e003e;  /* Deep Purple for Sidebar */
+    }
+
     h1, h2, h3 {
         color: white;
         text-shadow: 0 0 15px #ff69b4;
@@ -166,12 +170,9 @@ def apply_equalizer(data, fs, gains):
     for (low, high), gain in zip(bands, gains):
         filtered = bandpass_filter(data, low, high, fs)
         processed += filtered * gain
-    max_val = np.max(np.abs(processed))
-    if max_val > 0:
-        processed /= max_val  # Normalize to avoid clipping
     return processed
 
-# --- Pages ---
+# --- Home Page ---
 if st.session_state.page == "home":
     st.markdown("""
         <div class="home-container">
@@ -187,6 +188,7 @@ if st.session_state.page == "home":
 
     st.markdown("</div>", unsafe_allow_html=True)
 
+# --- About Page ---
 elif st.session_state.page == "about":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
@@ -211,6 +213,7 @@ elif st.session_state.page == "about":
             st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
+# --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
 
@@ -218,7 +221,7 @@ elif st.session_state.page == "equalizer":
 
     if uploaded_file is not None:
         file_size_mb = uploaded_file.size / (1024 * 1024)
-        if file_size_mb > 200:
+        if file_size_mb > 100:
             st.error("⚠️ File size exceeds 200 MB limit. Please upload a smaller file.")
         else:
             data, fs = load_audio(uploaded_file)
@@ -231,11 +234,13 @@ elif st.session_state.page == "equalizer":
 
             output = apply_equalizer(data, fs, [bass, mid, treble])
 
+            # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
             st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
+            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
@@ -251,6 +256,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
