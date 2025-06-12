@@ -9,41 +9,19 @@ import matplotlib.pyplot as plt
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Sidebar "About Us" ---
-with st.sidebar:
-    if st.button("ℹ️ About Us"):
-        st.session_state.show_about_us = True
-    else:
-        st.session_state.show_about_us = st.session_state.get("show_about_us", False)
-
-# --- Show About Us Info ---
-if st.session_state.get("show_about_us", False):
-    st.sidebar.markdown("""
-    ### 🎓 About Us
-
-    **Overview:**  
-    This is a Final Requirement for Digital Signal Processing (DSP) where this project is about making a digital equalizer that lets people change how music sounds by adjusting the bass, mid, and treble parts. We use DSP (Digital Signal Processing) to split the sound into these parts and change them using filters. It builds a simple website where users can upload a song, move sliders, and hear the new version. It shows how DSP can be used in real life to improve sound.
-
-    **The Creators:**  
-    • Ascutia, Lhian Xian  
-    • Guevarra, Feb Althea G.  
-    • Navarro, Mae Anthoniette C.  
-    • Pacurib, Monica Graciel C.  
-
-    **GROUP - 8 | COE221**
-    """)
-
 # --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles ---
+# --- Background + Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a, #1a001a);
+        background-image: url('https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg');
+        background-size: cover;
+        background-position: center;
         color: white;
         font-family: 'Orbitron', sans-serif;
     }
@@ -97,11 +75,13 @@ st.markdown("""
         color: #dddddd;
         margin-bottom: 0.5em;
     }
+
     .start-button {
         font-size: 1.8em;
         margin-top: 0.1em;
         text-align: center;
     }
+
     .stSlider > div {
         background-color: #111;
         border-radius: 10px;
@@ -132,6 +112,27 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# --- "About Us" Sidebar Toggle ---
+with st.sidebar:
+    if st.button("ℹ️ About Us"):
+        st.session_state["show_about_us"] = not st.session_state.get("show_about_us", False)
+
+    if st.session_state.get("show_about_us", False):
+        st.markdown("""
+        ### 🎓 About Us
+
+        **Overview:**  
+        This is a Final Requirement for Digital Signal Processing (DSP) where this project is about making a digital equalizer that lets people change how music sounds by adjusting the bass, mid, and treble parts. We use DSP (Digital Signal Processing) to split the sound into these parts and change them using filters. It builds a simple website where users can upload a song, move sliders, and hear the new version. It shows how DSP can be used in real life to improve sound.
+
+        **The Creators:**  
+        • Ascutia, Lhian Xian  
+        • Guevarra, Feb Althea G.  
+        • Navarro, Mae Anthoniette C.  
+        • Pacurib, Monica Graciel C.  
+
+        **GROUP - 8 | COE221**
+        """)
 
 # --- Functions ---
 def load_audio(file):
@@ -234,6 +235,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
