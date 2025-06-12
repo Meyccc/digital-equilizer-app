@@ -29,26 +29,32 @@ st.markdown("""
         text-shadow: 0 0 15px #ff69b4;
     }
 
-    .main-button button {
-        background: linear-gradient(90deg, #ff5f6d, #845ec2);
-        border: none;
-        padding: 1.2em 3em;
-        font-size: 1.5em;
-        color: white;
-        font-weight: bold;
-        border-radius: 25px;
-        box-shadow: 0 0 25px #ff69b4;
-        transition: 0.3s ease;
-    }
-
-    .main-button button:hover {
-        background: linear-gradient(90deg, #845ec2, #ff5f6d);
-        color: black !important;
-    }
-
     .center {
         text-align: center;
         margin-top: 8em;
+    }
+
+    .stButton > button,
+    .stDownloadButton > button,
+    .stFileUploader > div,
+    .main-button button {
+        background: linear-gradient(90deg, #ff5f6d, #ff69b4);
+        border: none;
+        padding: 1.2em 3em;
+        font-size: 1.2em;
+        color: white;
+        font-weight: bold;
+        border-radius: 50px;
+        box-shadow: 0 0 25px #ff69b4;
+        transition: 0.3s ease;
+        text-align: center;
+    }
+
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    .main-button button:hover {
+        background: linear-gradient(90deg, #ff85c1, #ff69b4);
+        color: black;
     }
 
     .stSlider > div {
@@ -64,20 +70,6 @@ st.markdown("""
 
     .stSlider input[type=range]::-webkit-slider-runnable-track {
         background: #333;
-    }
-
-    .stDownloadButton button {
-        background: #ff69b4;
-        color: black;
-        font-weight: bold;
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 0 12px #ff69b4;
-    }
-
-    .stDownloadButton button:hover {
-        background: #ff85c1;
-        color: #000;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -101,46 +93,45 @@ def apply_equalizer(data, fs, gains):
 
 # --- Home Page ---
 if st.session_state.page == "home":
-    st.markdown("""<div class="center">""", unsafe_allow_html=True)
-    st.markdown("<h1 style='font-size: 4em;'>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
-    if st.container().button("Start Now", key="start_home", help="Learn more first!", use_container_width=False):
+    st.markdown("""
+        <div class="center">
+            <h1>🎧 Digital Music Equalizer</h1>
+            <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
-    st.markdown("""<div class="center">""", unsafe_allow_html=True)
-    st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-        <p style='font-size: 1.1em;'>
-        <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
-        🎶 <strong>What it does:</strong><br>
-        This app allows you to fine-tune your audio files by adjusting frequency bands—<em>Bass</em>, <em>Midrange</em>, and <em>Treble</em>—using professional-grade filters.<br><br>
-        
-        🎚️ <strong>How it works:</strong><br>
-        The audio signal is split into frequency bands with digital filters (FIR bandpass filters), and you can boost or reduce each band independently.<br><br>
-
-        💾 <strong>Supported Files:</strong><br>
-        • WAV or MP3 audio formats<br>
-        • Maximum file size: 100 MB<br><br>
-        
-        📦 <strong>Features:</strong><br>
-        • Studio-inspired design<br>
-        • Real-time preview of your adjustments<br>
-        • Download your customized track in WAV format<br>
-        • Waveform visualization to monitor your sound<br><br>
-        
-        🎧 Whether you're enhancing podcasts, remixing songs, or refining recordings—<br>
-        this equalizer gives you full control over your audio’s character.
-        </p>
+        <div class="center">
+            <h1>ℹ️ About This App</h1>
+            <p style='font-size: 1.1em;'>
+            <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
+            🎶 <strong>What it does:</strong><br>
+            This app allows you to fine-tune your audio files by adjusting frequency bands—<em>Bass</em>, <em>Midrange</em>, and <em>Treble</em>—using professional-grade filters.<br><br>
+            🎚️ <strong>How it works:</strong><br>
+            The audio signal is split into frequency bands with digital filters (FIR bandpass filters), and you can boost or reduce each band independently.<br><br>
+            💾 <strong>Supported Files:</strong><br>
+            • WAV or MP3 audio formats<br>
+            • Maximum file size: 100 MB<br><br>
+            📦 <strong>Features:</strong><br>
+            • Studio-inspired design<br>
+            • Real-time preview of your adjustments<br>
+            • Download your customized track in WAV format<br>
+            • Waveform visualization to monitor your sound<br><br>
+            🎧 Whether you're enhancing podcasts, remixing songs, or refining recordings—<br>
+            this equalizer gives you full control over your audio’s character.
+            </p>
+        </div>
     """, unsafe_allow_html=True)
 
-    if st.container().button("Continue to Equalizer", key="to_equalizer", use_container_width=False):
+    if st.button("Continue to Equalizer", key="to_equalizer"):
         st.session_state.page = "equalizer"
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
@@ -181,6 +172,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
