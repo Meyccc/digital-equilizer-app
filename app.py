@@ -29,27 +29,26 @@ st.markdown("""
         text-shadow: 0 0 15px #ff69b4;
     }
 
-    .start-button {
+    .main-button button {
         background: linear-gradient(90deg, #ff5f6d, #845ec2);
         border: none;
-        padding: 0.75em 2em;
-        font-size: 1.2em;
+        padding: 1.2em 3em;
+        font-size: 1.5em;
         color: white;
         font-weight: bold;
         border-radius: 25px;
-        cursor: pointer;
-        box-shadow: 0 0 20px #ff69b4;
+        box-shadow: 0 0 25px #ff69b4;
         transition: 0.3s ease;
     }
 
-    .start-button:hover {
+    .main-button button:hover {
         background: linear-gradient(90deg, #845ec2, #ff5f6d);
         color: black;
     }
 
     .center {
         text-align: center;
-        margin-top: 10em;
+        margin-top: 8em;
     }
 
     .stSlider > div {
@@ -102,19 +101,46 @@ def apply_equalizer(data, fs, gains):
 
 # --- Home Page ---
 if st.session_state.page == "home":
+    st.markdown("""<div class="center">""", unsafe_allow_html=True)
+    st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
+    if st.container().button("Start Now", key="start_home", help="Learn more first!", use_container_width=False):
+        st.session_state.page = "about"
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# --- About Page ---
+elif st.session_state.page == "about":
+    st.markdown("""<div class="center">""", unsafe_allow_html=True)
+    st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-    <div class="center">
-        <h1>🎧 Digital Music Equalizer</h1>
-        <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
-        <form action="">
-            <button class="start-button" type="submit" name="start" value="1">Start Now</button>
-        </form>
-    </div>
+        <p style='font-size: 1.1em;'>
+        <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
+        🎶 <strong>What it does:</strong><br>
+        This app allows you to fine-tune your audio files by adjusting frequency bands—<em>Bass</em>, <em>Midrange</em>, and <em>Treble</em>—using professional-grade filters.<br><br>
+        
+        🎚️ <strong>How it works:</strong><br>
+        The audio signal is split into frequency bands with digital filters (FIR bandpass filters), and you can boost or reduce each band independently.<br><br>
+
+        💾 <strong>Supported Files:</strong><br>
+        • WAV or MP3 audio formats<br>
+        • Maximum file size: 100 MB<br><br>
+        
+        📦 <strong>Features:</strong><br>
+        • Studio-inspired design<br>
+        • Real-time preview of your adjustments<br>
+        • Download your customized track in WAV format<br>
+        • Waveform visualization to monitor your sound<br><br>
+        
+        🎧 Whether you're enhancing podcasts, remixing songs, or refining recordings—<br>
+        this equalizer gives you full control over your audio’s character.
+        </p>
     """, unsafe_allow_html=True)
 
-    if st.query_params.get("start") == "1":
+    if st.container().button("Continue to Equalizer", key="to_equalizer", use_container_width=False):
         st.session_state.page = "equalizer"
         st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
@@ -141,7 +167,7 @@ elif st.session_state.page == "equalizer":
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="hotpink_equalized_output.wav")
+            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
             # Visualization
             st.subheader("🔊 Processed Track Waveform")
