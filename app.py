@@ -1,10 +1,10 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
+import soundfile as sf
 from scipy.signal import firwin, lfilter
-from pydub import AudioSegment
 import io
-import tempfile
+import librosa
+import matplotlib.pyplot as plt
 
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
@@ -13,7 +13,7 @@ st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styling ---
+# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -86,14 +86,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Audio Functions ---
+# --- Functions ---
 def load_audio(file):
-    audio = AudioSegment.from_file(file)
-    samples = np.array(audio.get_array_of_samples()).astype(np.float32)
-    if audio.channels == 2:
-        samples = samples.reshape((-1, 2)).mean(axis=1)  # Convert to mono
-    samples /= np.iinfo(audio.array_type).max
-    return samples, audio.frame_rate
+    y, sr = librosa.load(file, sr=None, mono=True)
+    return y, sr
 
 def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
     taps = firwin(numtaps, [lowcut, highcut], pass_zero=False, fs=fs)
@@ -130,7 +126,10 @@ elif st.session_state.page == "equalizer":
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
     if uploaded_file is not None:
-        try:
+        file_size_mb = uploaded_file.size / (1024 * 1024)
+        if file_size_mb > 100:
+            st.error("⚠️ File size exceeds 100 MB limit. Please upload a smaller file.")
+        else:
             data, fs = load_audio(uploaded_file)
             st.audio(uploaded_file)
 
@@ -140,18 +139,12 @@ elif st.session_state.page == "equalizer":
             treble = st.slider("Treble Boost (4–10 kHz)", 0.0, 2.0, 1.0, 0.1)
 
             output = apply_equalizer(data, fs, [bass, mid, treble])
-            output_int16 = np.int16(output / np.max(np.abs(output)) * 32767)
 
+            # Save and play
             buf = io.BytesIO()
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-                from scipy.io.wavfile import write
-                write(tmp.name, fs, output_int16)
-                with open(tmp.name, "rb") as f:
-                    buf.write(f.read())
-                buf.seek(0)
-
+            sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
+            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="hotpink_equalized_output.wav")
 
             # Visualization
             st.subheader("🔊 Processed Track Waveform")
@@ -166,8 +159,6 @@ elif st.session_state.page == "equalizer":
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
 
-        except Exception as e:
-            st.error(f"🚫 Error processing file: {e}")
 
 
 
