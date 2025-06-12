@@ -7,7 +7,7 @@ import base64
 
 st.set_page_config(layout="wide")
 
-# Load CSS styling with embedded background
+# Load CSS styling with embedded background and theme
 def local_css_with_bg(image_path):
     with open(image_path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
@@ -20,34 +20,45 @@ def local_css_with_bg(image_path):
         background-repeat: no-repeat;
         font-family: 'Segoe UI', sans-serif;
     }}
+    .centered {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        color: white;
+    }}
     .start-button {{
-        font-size: 1.6rem;
-        font-weight: 600;
+        font-size: 2rem;
+        font-weight: bold;
         border-radius: 50px;
-        padding: 0.8em 2.5em;
+        padding: 1em 2.5em;
         background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
+        margin-top: 30px;
     }}
     .start-button:hover {{
         transform: scale(1.05);
         background: linear-gradient(to right, #ec4899, #a855f7);
     }}
-    .centered {{
-        text-align: center;
-        color: white;
-        margin-top: 15vh;
+    .slider-label {{
+        font-size: 1.5rem;
+        color: #f9a8d4;
+        font-weight: 600;
+        margin-top: 1.5rem;
     }}
     </style>
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
-# Apply background
+# Apply CSS
 local_css_with_bg("background.jpg")
 
-# State init
+# Session state setup
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
@@ -55,29 +66,38 @@ if "page" not in st.session_state:
 def show_homepage():
     st.markdown("""
     <div class="centered">
-        <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
-        <p style="font-size: 1.4rem;">Shape your sound with studio-level precision.</p>
+        <h1 style="font-size: 4rem; font-weight: 700;">🎧 Digital Music Equalizer</h1>
+        <p style="font-size: 1.5rem;">Shape your sound with studio-level precision.</p>
+        <button class="start-button" onclick="window.location.reload(); document.cookie = 'streamlit_page=equalizer';">🎵 Start Now</button>
     </div>
     """, unsafe_allow_html=True)
 
-    # Center the button with columns
-    col1, col2, col3 = st.columns([2, 1, 2])
-    with col2:
-        if st.button("🎵 Start Now", key="start_button"):
-            st.session_state.page = "equalizer"
+    # Fallback if JavaScript doesn't work (manual button)
+    if st.button("Start Equalizer", key="start_fallback"):
+        st.session_state.page = "equalizer"
 
 # Equalizer Page
 def show_equalizer():
-    st.markdown("<h1 style='color:white; font-size:2.5rem;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='text-align: center; padding-top: 2rem;'>
+        <h1 style='color:white; font-size: 3rem;'>🎛️ Music Equalizer</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
     if st.button("🔙 Back to Home"):
         st.session_state.page = "home"
         return
 
     audio_file = st.file_uploader("Upload Audio", type=["mp3", "wav"])
-    bass_gain = st.slider("🎚️ Bass Gain", -20, 20, 0)
-    mid_gain = st.slider("🎚️ Mid Gain", -20, 20, 0)
-    treble_gain = st.slider("🎚️ Treble Gain", -20, 20, 0)
+
+    st.markdown('<div class="slider-label">Bass Gain</div>', unsafe_allow_html=True)
+    bass_gain = st.slider("", -20, 20, 0, key="bass", label_visibility="collapsed")
+
+    st.markdown('<div class="slider-label">Mid Gain</div>', unsafe_allow_html=True)
+    mid_gain = st.slider("", -20, 20, 0, key="mid", label_visibility="collapsed")
+
+    st.markdown('<div class="slider-label">Treble Gain</div>', unsafe_allow_html=True)
+    treble_gain = st.slider("", -20, 20, 0, key="treble", label_visibility="collapsed")
 
     if audio_file:
         y, sr = librosa.load(audio_file, sr=None, mono=True)
@@ -104,7 +124,7 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Modified Audio", f, "equalized_output.wav")
 
-# App router
+# Routing
 if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
