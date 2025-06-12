@@ -6,14 +6,11 @@ import io
 import librosa
 import matplotlib.pyplot as plt
 
-# --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -37,10 +34,7 @@ st.markdown("""
     .button-center {
         display: flex;
         justify-content: center;
-        align-items: center;
         margin-top: 2em;
-        width: 100%;
-        text-align: center;
     }
 
     .stButton > button,
@@ -89,7 +83,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Functions ---
 def load_audio(file):
     y, sr = librosa.load(file, sr=None, mono=True)
     return y, sr
@@ -99,14 +92,13 @@ def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
     return lfilter(taps, 1.0, data)
 
 def apply_equalizer(data, fs, gains):
-    bands = [(60, 250), (250, 4000), (4000, 10000)]  # Bass, Mid, Treble
+    bands = [(60, 250), (250, 4000), (4000, 10000)]
     processed = np.zeros_like(data)
     for (low, high), gain in zip(bands, gains):
         filtered = bandpass_filter(data, low, high, fs)
         processed += filtered * gain
     return processed
 
-# --- Home Page ---
 if st.session_state.page == "home":
     st.markdown("""
         <div class="center">
@@ -121,7 +113,6 @@ if st.session_state.page == "home":
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- About Page ---
 elif st.session_state.page == "about":
     st.markdown("""
         <div class="center">
@@ -156,7 +147,6 @@ elif st.session_state.page == "about":
             st.session_state.page = "equalizer"
             st.rerun()
 
-# --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
 
@@ -181,13 +171,11 @@ elif st.session_state.page == "equalizer":
 
             output = apply_equalizer(data, fs, [bass, mid, treble])
 
-            # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
             st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
-            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
@@ -199,6 +187,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
