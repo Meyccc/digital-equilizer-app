@@ -7,7 +7,7 @@ import base64
 
 st.set_page_config(layout="wide")
 
-# Load CSS styling with embedded background and theme
+# Load CSS styling with embedded background
 def local_css_with_bg(image_path):
     with open(image_path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
@@ -30,53 +30,43 @@ def local_css_with_bg(image_path):
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-top: 25px;
     }}
     .start-button:hover {{
         transform: scale(1.05);
         background: linear-gradient(to right, #ec4899, #a855f7);
     }}
     .centered {{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
         text-align: center;
         color: white;
+        margin-top: 15vh;
     }}
     </style>
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
-# Apply CSS
+# Apply background
 local_css_with_bg("background.jpg")
 
-# Session state setup
+# State init
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
 # Homepage
 def show_homepage():
-    st.markdown(f"""
+    st.markdown("""
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.4rem;">Shape your sound with studio-level precision.</p>
-        <form action="" method="post">
-            <button class="start-button" type="submit" name="start">🎵 Start Now</button>
-        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    # Workaround to trigger navigation
-    if st.session_state.get("start_clicked"):
-        st.session_state.page = "equalizer"
+    # Center the button with columns
+    col1, col2, col3 = st.columns([2, 1, 2])
+    with col2:
+        if st.button("🎵 Start Now", key="start_button"):
+            st.session_state.page = "equalizer"
 
-    # Check if the form is submitted (simulate post)
-    if st.query_params.get("start") is not None:
-        st.session_state.page = "equalizer"
-
-# Equalizer
+# Equalizer Page
 def show_equalizer():
     st.markdown("<h1 style='color:white; font-size:2.5rem;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
 
@@ -85,15 +75,9 @@ def show_equalizer():
         return
 
     audio_file = st.file_uploader("Upload Audio", type=["mp3", "wav"])
-
-    st.markdown('<div class="slider-label">Bass Gain</div>', unsafe_allow_html=True)
-    bass_gain = st.slider("", -20, 20, 0, key="bass", label_visibility="collapsed")
-
-    st.markdown('<div class="slider-label">Mid Gain</div>', unsafe_allow_html=True)
-    mid_gain = st.slider("", -20, 20, 0, key="mid", label_visibility="collapsed")
-
-    st.markdown('<div class="slider-label">Treble Gain</div>', unsafe_allow_html=True)
-    treble_gain = st.slider("", -20, 20, 0, key="treble", label_visibility="collapsed")
+    bass_gain = st.slider("🎚️ Bass Gain", -20, 20, 0)
+    mid_gain = st.slider("🎚️ Mid Gain", -20, 20, 0)
+    treble_gain = st.slider("🎚️ Treble Gain", -20, 20, 0)
 
     if audio_file:
         y, sr = librosa.load(audio_file, sr=None, mono=True)
@@ -120,11 +104,12 @@ def show_equalizer():
         with open("output.wav", "rb") as f:
             st.download_button("Download Modified Audio", f, "equalized_output.wav")
 
-# Route
+# App router
 if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
