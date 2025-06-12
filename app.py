@@ -33,7 +33,7 @@ st.markdown("""
         background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
         border: none !important;
         padding: 0.8em 2.5em !important;
-        font-size: 1.4em !important;
+        font-size: 1.2em !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 20px !important;
@@ -57,7 +57,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 85vh;
+        height: 75vh;
         text-align: center;
     }
 
