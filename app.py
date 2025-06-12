@@ -40,6 +40,7 @@ st.markdown("""
         align-items: center;
         margin-top: 2em;
         width: 100%;
+        text-align: center;
     }
 
     .stButton > button,
@@ -198,6 +199,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
