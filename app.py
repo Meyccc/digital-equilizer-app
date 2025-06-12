@@ -70,6 +70,8 @@ st.markdown("""
 
     .start-button-container {
         margin-top: 1em;
+        font-size: 1.8em;
+        margin-bottom: 1em;
     }
 
     .stSlider > div {
