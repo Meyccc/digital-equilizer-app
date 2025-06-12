@@ -20,44 +20,43 @@ st.markdown("""
 
     .stApp {
         background: linear-gradient(135deg, #1e1e2f, #2e003e);
-        color: white;
         font-family: 'Orbitron', sans-serif;
+        color: white;
         text-align: center;
     }
 
-    h1, h2, h3, p {
+    h1, h2, h3, p, .stMarkdown h1 {
+        color: #ff69b4;
+        font-size: 1.6em;
         text-align: center;
-        color: white;
-        font-size: 1.5em;
     }
 
     .main-button button,
     .stButton>button,
     .stDownloadButton button {
-        background: linear-gradient(90deg, #ff9ebc, #d47bc0);
+        background: linear-gradient(90deg, #ffb6c1, #e298b7);
         border: none;
-        padding: 1.0em 2.8em;
-        font-size: 1.2em;
+        padding: 1.0em 2.5em;
+        font-size: 1.1em;
         color: white;
         font-weight: bold;
         border-radius: 999px;
-        box-shadow: 0 0 15px rgba(255, 158, 188, 0.3);
+        box-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
         transition: all 0.3s ease;
-        text-align: center;
+        display: inline-block;
         margin: 1em auto;
-        display: block;
+        text-align: center;
     }
 
-    .main-button button:hover,
     .stButton>button:hover,
     .stDownloadButton button:hover {
-        background: linear-gradient(90deg, #d47bc0, #ff9ebc);
+        background: linear-gradient(90deg, #e298b7, #ffb6c1);
         color: black;
         transform: scale(1.03);
     }
 
     .stSlider > div {
-        background-color: #1a1a2a;
+        background-color: #2a2a3f;
         border-radius: 10px;
         padding: 0.5em;
     }
@@ -68,8 +67,8 @@ st.markdown("""
     }
 
     .stSlider input[type=range]::-webkit-slider-thumb {
-        background: #ff9ebc;
-        box-shadow: 0 0 8px #ff9ebc;
+        background: #ff69b4;
+        box-shadow: 0 0 10px #ff69b4;
     }
 
     .stSlider input[type=range]::-webkit-slider-runnable-track {
@@ -164,8 +163,8 @@ elif st.session_state.page == "equalizer":
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
-            ax.plot(time, output, color="#ff9ebc", linewidth=0.5)
-            ax.set_title("Processed Audio", fontsize=14, color='#ff9ebc')
+            ax.plot(time, output, color="#ff69b4", linewidth=0.5)
+            ax.set_title("Processed Audio", fontsize=14, color='#ff69b4')
             ax.set_xlabel("Time [s]", color='white')
             ax.set_ylabel("Amplitude", color='white')
             ax.set_facecolor("#1e1e2f")
