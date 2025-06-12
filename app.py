@@ -21,15 +21,16 @@ def local_css_with_bg(image_path):
         font-family: 'Segoe UI', sans-serif;
     }}
     .start-button {{
-        font-size: 1.3rem;
-        border-radius: 40px;
-        padding: 0.6em 1.8em;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 0.8em 2.5em;
         background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-top: 20px;
+        margin-top: 25px;
     }}
     .start-button:hover {{
         transform: scale(1.05);
@@ -44,18 +45,12 @@ def local_css_with_bg(image_path):
         text-align: center;
         color: white;
     }}
-    .slider-label {{
-        font-size: 1.3rem;
-        color: #ec4899;
-        font-weight: 600;
-        margin-top: 1.2rem;
-    }}
     </style>
     """
     st.markdown(background_css, unsafe_allow_html=True)
 
 # Apply CSS
-local_css_with_bg("background.jpg")  # Ensure your image is named exactly this
+local_css_with_bg("background.jpg")
 
 # Session state setup
 if "page" not in st.session_state:
@@ -66,14 +61,20 @@ def show_homepage():
     st.markdown(f"""
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: 600;">🎧 Digital Music Equalizer</h1>
-        <p style="font-size: 1.2rem;">Shape your sound with studio-level precision.</p>
+        <p style="font-size: 1.4rem;">Shape your sound with studio-level precision.</p>
+        <form action="" method="post">
+            <button class="start-button" type="submit" name="start">🎵 Start Now</button>
+        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        if st.button("🎵 Start Now", key="start", help="Begin audio equalization"):
-            st.session_state.page = "equalizer"
+    # Workaround to trigger navigation
+    if st.session_state.get("start_clicked"):
+        st.session_state.page = "equalizer"
+
+    # Check if the form is submitted (simulate post)
+    if st.query_params.get("start") is not None:
+        st.session_state.page = "equalizer"
 
 # Equalizer
 def show_equalizer():
@@ -124,6 +125,7 @@ if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
