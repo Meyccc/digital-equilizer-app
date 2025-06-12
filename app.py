@@ -33,7 +33,7 @@ st.markdown("""
         background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
         border: none !important;
         padding: 0.8em 2em !important;
-        font-size: 1.2em !important;
+        font-size: 1.4em !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 20px !important;
@@ -44,11 +44,6 @@ st.markdown("""
     button:hover {
         background: linear-gradient(90deg, #845ec2, #ff5f6d) !important;
         color: black !important;
-    }
-
-    .center {
-        text-align: center;
-        margin-top: 8em;
     }
 
     .home-container {
@@ -70,12 +65,40 @@ st.markdown("""
     .home-description {
         font-size: 1.8em;
         color: #dddddd;
-        margin-bottom: 0.6em;
+        margin-bottom: 1em;
     }
 
-    .start-button {
-        margin-top: 0.1em;
-        text-align: center;
+    .start-button-container {
+        margin-top: 1em;
+    }
+
+    .stSlider > div {
+        background-color: #111;
+        border-radius: 10px;
+        padding: 0.5em;
+    }
+
+    .stSlider input[type=range]::-webkit-slider-thumb {
+        background: #ff69b4;
+        box-shadow: 0 0 12px #ff69b4;
+    }
+
+    .stSlider input[type=range]::-webkit-slider-runnable-track {
+        background: #333;
+    }
+
+    .stDownloadButton button {
+        background: #ff69b4 !important;
+        color: black !important;
+        font-weight: bold !important;
+        border-radius: 10px !important;
+        border: none !important;
+        box-shadow: 0 0 12px #ff69b4;
+    }
+
+    .stDownloadButton button:hover {
+        background: #ff85c1 !important;
+        color: #000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -103,7 +126,7 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-        </div>
+            <div class="start-button-container">
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -111,6 +134,11 @@ if st.session_state.page == "home":
         if st.button("🚀 Start Now", key="start_home"):
             st.session_state.page = "about"
             st.rerun()
+
+    st.markdown("""
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -180,7 +208,6 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
-
 
 
 
