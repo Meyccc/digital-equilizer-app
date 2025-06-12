@@ -29,6 +29,23 @@ st.markdown("""
         text-shadow: 0 0 15px #ff69b4;
     }
 
+    button {
+        background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
+        border: none !important;
+        padding: 0.8em 2em !important;
+        font-size: 1.2em !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 20px !important;
+        box-shadow: 0 0 12px #ff69b4;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: linear-gradient(90deg, #845ec2, #ff5f6d) !important;
+        color: black !important;
+    }
+
     .center {
         text-align: center;
         margin-top: 8em;
@@ -39,7 +56,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 90vh;
+        height: 85vh;
         text-align: center;
     }
 
@@ -57,19 +74,22 @@ st.markdown("""
     }
 
     .start-button {
-        font-size: 2em !important;
-        padding: 0.6em 2em !important;
-        background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
-        border: none !important;
-        border-radius: 15px !important;
-        font-weight: bold !important;
-        color: white !important;
+        background: linear-gradient(90deg, #ff5f6d, #845ec2);
+        border: none;
+        padding: 0.8em 2em;
+        font-size: 1.2em;
+        color: white;
+        font-weight: bold;
+        border-radius: 20px;
         box-shadow: 0 0 12px #ff69b4;
+        transition: background 0.3s ease;
+        margin-top: 1.5em;
+        cursor: pointer;
     }
 
     .start-button:hover {
-        background: linear-gradient(90deg, #845ec2, #ff5f6d) !important;
-        color: black !important;
+        background: linear-gradient(90deg, #845ec2, #ff5f6d);
+        color: black;
     }
 
     .stSlider > div {
@@ -126,30 +146,15 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-            <form action="#">
-                <button class="start-button" type="submit">🚀 Start Now</button>
+            <form action="" method="post">
+                <button type="submit" class="start-button">🚀 Start Now</button>
             </form>
         </div>
     """, unsafe_allow_html=True)
 
-    # Use form submission to control rerun
-    if st.query_params.get("start") == "true" or st.session_state.get("go"):
+    if st.form_submit_button("🚀 Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
-
-    if st._is_running_with_streamlit:
-        st.markdown("""
-            <script>
-            const button = window.parent.document.querySelector("form button");
-            if (button) {
-                button.onclick = () => {
-                    const query = new URLSearchParams(window.location.search);
-                    query.set("start", "true");
-                    window.location.search = query.toString();
-                };
-            }
-            </script>
-        """, unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
