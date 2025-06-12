@@ -57,7 +57,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 75vh;
+        height: 60vh;
         text-align: center;
     }
 
