@@ -1,6 +1,6 @@
-streamlit
+streamlit>=1.20
 numpy
 scipy
-pysoundfile
-librosa
+librosa>=0.10
+soundfile
 matplotlib
