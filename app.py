@@ -153,7 +153,8 @@ with st.sidebar:
         ### 📘 An Overview
 
         This is a Final Requirement for Digital Signal Processing (DSP) where this project is about making a digital equalizer that lets people change how music sounds by adjusting the bass, mid, and treble parts. We use DSP (Digital Signal Processing) to split the sound into these parts and change them using filters. It builds a simple website where users can upload a song, move sliders, and hear the new version. It shows how DSP can be used in real life to improve sound.
-        """)
+
+The project not only demonstrates fundamental DSP concepts but also bridges the gap between academic theory and practical application. By integrating intuitive controls and real-time audio feedback, users can clearly experience how digital filters affect audio quality. This hands-on interaction fosters a deeper understanding of signal manipulation, filter design, and frequency dynamics.
 
 # --- Functions ---
 def load_audio(file):
