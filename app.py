@@ -6,85 +6,87 @@ import io
 import librosa
 import matplotlib.pyplot as plt
 
-# --- Set Page Config ---
-st.set_page_config(page_title="Digital Music Equalizer", layout="wide")
+# --- Page Config ---
+st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Persistent State for Navigation ---
+# --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styling with Background and Neon Purple Theme ---
-st.markdown("""
+# --- Styles with Background Image ---
+st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    .stApp {
-        background-image: url('https://raw.githubusercontent.com/your-username/your-repo-name/main/background.jpeg');
+    .stApp {{
+        background-image: url('https://raw.githubusercontent.com/your-username/your-repo/main/background.jpeg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         color: white;
         font-family: 'Orbitron', sans-serif;
-    }
+    }}
 
-    h1, h2, h3 {
+    h1, h2, h3 {{
         color: white;
-        text-shadow: 0 0 15px #a020f0;
-    }
+        text-shadow: 0 0 15px #ff69b4;
+    }}
 
-    .stSlider > div {
+    .start-button {{
+        background: linear-gradient(90deg, #ff5f6d, #845ec2);
+        border: none;
+        padding: 0.75em 2em;
+        font-size: 1.2em;
+        color: white;
+        font-weight: bold;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 0 20px #ff69b4;
+        transition: 0.3s ease;
+    }}
+
+    .start-button:hover {{
+        background: linear-gradient(90deg, #845ec2, #ff5f6d);
+        color: black;
+    }}
+
+    .center {{
+        text-align: center;
+        margin-top: 10em;
+    }}
+
+    .stSlider > div {{
         background-color: #111;
         border-radius: 10px;
         padding: 0.5em;
-    }
+    }}
 
-    .stSlider input[type=range]::-webkit-slider-thumb {
-        background: #a020f0;
-        box-shadow: 0 0 12px #a020f0;
-    }
+    .stSlider input[type=range]::-webkit-slider-thumb {{
+        background: #ff69b4;
+        box-shadow: 0 0 12px #ff69b4;
+    }}
 
-    .stSlider input[type=range]::-webkit-slider-runnable-track {
+    .stSlider input[type=range]::-webkit-slider-runnable-track {{
         background: #333;
-    }
+    }}
 
-    .stDownloadButton button {
-        background: #a020f0;
-        color: white;
+    .stDownloadButton button {{
+        background: #ff69b4;
+        color: black;
         font-weight: bold;
         border-radius: 10px;
         border: none;
-        box-shadow: 0 0 12px #a020f0;
-    }
+        box-shadow: 0 0 12px #ff69b4;
+    }}
 
-    .stDownloadButton button:hover {
-        background: #c64ff7;
+    .stDownloadButton button:hover {{
+        background: #ff85c1;
         color: #000;
-    }
-
-    .start-button {
-        background: linear-gradient(45deg, #a020f0, #c64ff7);
-        color: white;
-        font-size: 1.5em;
-        font-weight: bold;
-        padding: 0.75em 2em;
-        border-radius: 30px;
-        border: none;
-        box-shadow: 0 0 25px #c64ff7;
-        margin-top: 2em;
-    }
-
-    .start-button:hover {
-        background: #c64ff7;
-        color: black;
-    }
-
-    audio {
-        filter: drop-shadow(0 0 10px #a020f0aa);
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
-# --- Audio Processing Functions ---
+# --- Functions ---
 def load_audio(file):
     y, sr = librosa.load(file, sr=None, mono=True)
     return y, sr
@@ -101,18 +103,24 @@ def apply_equalizer(data, fs, gains):
         processed += filtered * gain
     return processed
 
-# --- Homepage ---
-def show_homepage():
-    st.markdown("<h1 style='text-align: center;'>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center;'>Shape your sound with studio-level precision.</h3>", unsafe_allow_html=True)
+# --- Home Page ---
+if st.session_state.page == "home":
+    st.markdown("""
+    <div class="center">
+        <h1>🎧 Digital Music Equalizer</h1>
+        <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
+        <form action="">
+            <button class="start-button" type="submit" name="start" value="1">Start Now</button>
+        </form>
+    </div>
+    """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🎵 Start Now", key="start_button", use_container_width=True):
-            st.session_state.page = "equalizer"
+    if st.query_params.get("start") == "1":
+        st.session_state.page = "equalizer"
+        st.rerun()
 
 # --- Equalizer Page ---
-def show_equalizer():
+elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
@@ -136,14 +144,14 @@ def show_equalizer():
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
+            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="hotpink_equalized_output.wav")
 
-            # --- Processed Visualization ---
+            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
-            ax.plot(time, output, color="#a020f0", linewidth=0.5)
-            ax.set_title("Processed Audio", fontsize=12, color='#a020f0')
+            ax.plot(time, output, color="#ff69b4", linewidth=0.5)
+            ax.set_title("Processed Audio", fontsize=12, color='#ff69b4')
             ax.set_xlabel("Time [s]", color='white')
             ax.set_ylabel("Amplitude", color='white')
             ax.set_facecolor("#0a0a0a")
@@ -151,15 +159,6 @@ def show_equalizer():
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
 
-    # Optional back button
-    if st.button("⬅️ Back to Home"):
-        st.session_state.page = "home"
-
-# --- Render the Appropriate Page ---
-if st.session_state.page == "home":
-    show_homepage()
-else:
-    show_equalizer()
 
 
 
