@@ -9,20 +9,20 @@ import matplotlib.pyplot as plt
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Session State ---
+# --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- CSS Styling ---
+# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpeg");
+        background-image: url("https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg");
         background-size: cover;
-        background-position: center;
         background-repeat: no-repeat;
+        background-position: center;
         color: white;
         font-family: 'Orbitron', sans-serif;
     }
@@ -86,7 +86,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Audio Functions ---
+# --- Functions ---
 def load_audio(file):
     y, sr = librosa.load(file, sr=None, mono=True)
     return y, sr
@@ -103,18 +103,19 @@ def apply_equalizer(data, fs, gains):
         processed += filtered * gain
     return processed
 
-# --- Homepage ---
+# --- Home Page ---
 if st.session_state.page == "home":
     st.markdown("""
     <div class="center">
         <h1>🎧 Digital Music Equalizer</h1>
         <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="window.location.href='?start=1'">Start Now</button>
+        <form action="">
+            <button class="start-button" type="submit" name="start" value="1">Start Now</button>
+        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    # Use new query param method
-    if st.query_params.get("start") == ["1"]:
+    if st.query_params.get("start") == "1":
         st.session_state.page = "equalizer"
         st.rerun()
 
