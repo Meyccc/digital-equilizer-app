@@ -7,11 +7,11 @@ import base64
 
 st.set_page_config(layout="wide")
 
-# Load CSS styling with embedded background and theme
+# Custom CSS with background and theme styling
 def local_css_with_bg(image_path):
     with open(image_path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
-    background_css = f"""
+    css = f"""
     <style>
     .stApp {{
         background-image: url("data:image/jpg;base64,{encoded}");
@@ -31,9 +31,8 @@ def local_css_with_bg(image_path):
     }}
     .start-button {{
         font-size: 2rem;
-        font-weight: bold;
         border-radius: 50px;
-        padding: 1em 2.5em;
+        padding: 1em 2em;
         background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
         border: none;
@@ -47,42 +46,42 @@ def local_css_with_bg(image_path):
     }}
     .slider-label {{
         font-size: 1.5rem;
-        color: #f9a8d4;
-        font-weight: 600;
+        color: #ec4899;
         margin-top: 1.5rem;
+        font-weight: bold;
+    }}
+    .stSlider > div {{
+        color: #e879f9;
     }}
     </style>
     """
-    st.markdown(background_css, unsafe_allow_html=True)
+    st.markdown(css, unsafe_allow_html=True)
 
 # Apply CSS
-local_css_with_bg("background.jpg")
+local_css_with_bg("background.jpg")  # make sure your image is named "background.jpg"
 
-# Session state setup
+# Session state for page navigation
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# Homepage
+# Homepage with centered large Start button
 def show_homepage():
-    st.markdown("""
+    st.markdown(f"""
     <div class="centered">
-        <h1 style="font-size: 4rem; font-weight: 700;">🎧 Digital Music Equalizer</h1>
+        <h1 style="font-size: 3rem; font-weight: bold;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.5rem;">Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="window.location.reload(); document.cookie = 'streamlit_page=equalizer';">🎵 Start Now</button>
+        <form action="" method="post">
+            <button class="start-button" type="submit" name="start">🎵 Start Now</button>
+        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    # Fallback if JavaScript doesn't work (manual button)
-    if st.button("Start Equalizer", key="start_fallback"):
+    if st.experimental_get_query_params().get("start") or st.form_submit_button("start"):
         st.session_state.page = "equalizer"
 
 # Equalizer Page
 def show_equalizer():
-    st.markdown("""
-    <div style='text-align: center; padding-top: 2rem;'>
-        <h1 style='color:white; font-size: 3rem;'>🎛️ Music Equalizer</h1>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("<h1 style='color:white; font-size:2.5rem; text-align:center;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
 
     if st.button("🔙 Back to Home"):
         st.session_state.page = "home"
