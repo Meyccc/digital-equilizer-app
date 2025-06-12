@@ -5,15 +5,16 @@ from scipy.signal import firwin, lfilter
 import io
 import librosa
 import matplotlib.pyplot as plt
+import tempfile
 
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Session State to Control Page Navigation ---
+# --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Custom CSS Styling ---
+# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -88,9 +89,10 @@ st.markdown("""
 
 # --- Audio Functions ---
 def load_audio(file):
-    audio_bytes = io.BytesIO(file.read())
-    audio_bytes.seek(0)
-    y, sr = librosa.load(audio_bytes, sr=None, mono=True)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmp_file:
+        tmp_file.write(file.read())
+        tmp_file.flush()
+        y, sr = librosa.load(tmp_file.name, sr=None, mono=True)
     return y, sr
 
 def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
@@ -117,7 +119,6 @@ if st.session_state.page == "home":
     </div>
     """, unsafe_allow_html=True)
 
-    # Simulate page change using query param
     if st.query_params.get("start") == "1":
         st.session_state.page = "equalizer"
         st.rerun()
@@ -146,11 +147,10 @@ elif st.session_state.page == "equalizer":
             # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
-            buf.seek(0)
             st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
+            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="hotpink_equalized_output.wav")
 
-            # Waveform
+            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
