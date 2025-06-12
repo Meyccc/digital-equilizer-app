@@ -5,7 +5,6 @@ from scipy.signal import firwin, lfilter
 import io
 import librosa
 import matplotlib.pyplot as plt
-import tempfile
 
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
@@ -15,23 +14,22 @@ if "page" not in st.session_state:
     st.session_state.page = "home"
 
 # --- Styles ---
-st.markdown(f"""
+st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    .stApp {{
-        background: url('https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg') no-repeat center center fixed;
-        background-size: cover;
+    .stApp {
+        background: linear-gradient(135deg, #0a0a0a, #1a001a);
         color: white;
         font-family: 'Orbitron', sans-serif;
-    }}
+    }
 
-    h1, h2, h3 {{
+    h1, h2, h3 {
         color: white;
         text-shadow: 0 0 15px #ff69b4;
-    }}
+    }
 
-    .start-button {{
+    .start-button {
         background: linear-gradient(90deg, #ff5f6d, #845ec2);
         border: none;
         padding: 0.75em 2em;
@@ -42,55 +40,52 @@ st.markdown(f"""
         cursor: pointer;
         box-shadow: 0 0 20px #ff69b4;
         transition: 0.3s ease;
-    }}
+    }
 
-    .start-button:hover {{
+    .start-button:hover {
         background: linear-gradient(90deg, #845ec2, #ff5f6d);
         color: black;
-    }}
+    }
 
-    .center {{
+    .center {
         text-align: center;
         margin-top: 10em;
-    }}
+    }
 
-    .stSlider > div {{
+    .stSlider > div {
         background-color: #111;
         border-radius: 10px;
         padding: 0.5em;
-    }}
+    }
 
-    .stSlider input[type=range]::-webkit-slider-thumb {{
+    .stSlider input[type=range]::-webkit-slider-thumb {
         background: #ff69b4;
         box-shadow: 0 0 12px #ff69b4;
-    }}
+    }
 
-    .stSlider input[type=range]::-webkit-slider-runnable-track {{
+    .stSlider input[type=range]::-webkit-slider-runnable-track {
         background: #333;
-    }}
+    }
 
-    .stDownloadButton button {{
+    .stDownloadButton button {
         background: #ff69b4;
         color: black;
         font-weight: bold;
         border-radius: 10px;
         border: none;
         box-shadow: 0 0 12px #ff69b4;
-    }}
+    }
 
-    .stDownloadButton button:hover {{
+    .stDownloadButton button:hover {
         background: #ff85c1;
         color: #000;
-    }}
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # --- Functions ---
 def load_audio(file):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-        tmp.write(file.read())
-        tmp.flush()
-        y, sr = librosa.load(tmp.name, sr=None, mono=True)
+    y, sr = librosa.load(file, sr=None, mono=True)
     return y, sr
 
 def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
