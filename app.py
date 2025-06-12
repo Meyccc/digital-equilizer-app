@@ -9,20 +9,20 @@ import matplotlib.pyplot as plt
 # --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
-# --- Session state to switch pages ---
+# --- Session State to Control Page Navigation ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles ---
+# --- Custom CSS Styling ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg");
+        background-image: url('https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg');
         background-size: cover;
-        background-repeat: no-repeat;
         background-position: center;
+        background-repeat: no-repeat;
         color: white;
         font-family: 'Orbitron', sans-serif;
     }
@@ -36,7 +36,7 @@ st.markdown("""
         background: linear-gradient(90deg, #ff5f6d, #845ec2);
         border: none;
         padding: 0.75em 2em;
-        font-size: 1.3em;
+        font-size: 1.2em;
         color: white;
         font-weight: bold;
         border-radius: 25px;
@@ -52,7 +52,7 @@ st.markdown("""
 
     .center {
         text-align: center;
-        margin-top: 12em;
+        margin-top: 10em;
     }
 
     .stSlider > div {
@@ -62,8 +62,8 @@ st.markdown("""
     }
 
     .stSlider input[type=range]::-webkit-slider-thumb {
-        background: #da70d6;
-        box-shadow: 0 0 12px #da70d6;
+        background: #ff69b4;
+        box-shadow: 0 0 12px #ff69b4;
     }
 
     .stSlider input[type=range]::-webkit-slider-runnable-track {
@@ -86,9 +86,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Functions ---
+# --- Audio Functions ---
 def load_audio(file):
-    y, sr = librosa.load(file, sr=None, mono=True)
+    audio_bytes = io.BytesIO(file.read())
+    audio_bytes.seek(0)
+    y, sr = librosa.load(audio_bytes, sr=None, mono=True)
     return y, sr
 
 def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
@@ -115,6 +117,7 @@ if st.session_state.page == "home":
     </div>
     """, unsafe_allow_html=True)
 
+    # Simulate page change using query param
     if st.query_params.get("start") == "1":
         st.session_state.page = "equalizer"
         st.rerun()
@@ -143,10 +146,11 @@ elif st.session_state.page == "equalizer":
             # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
+            buf.seek(0)
             st.audio(buf, format='audio/wav')
-            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="hotpink_equalized_output.wav")
+            st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
-            # Visualization
+            # Waveform
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
