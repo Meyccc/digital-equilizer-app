@@ -79,6 +79,12 @@ st.markdown("""
         background: #ff85c1 !important;
         color: #000 !important;
     }
+
+    .center-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -104,6 +110,8 @@ if st.session_state.page == "home":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
+    st.markdown("""</div>""", unsafe_allow_html=True)
+    st.markdown('<div class="center-button">', unsafe_allow_html=True)
     if st.button("🚀 Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
@@ -122,15 +130,25 @@ elif st.session_state.page == "about":
         Whether you want deeper bass for your workouts or sharper treble for acoustic tracks, this tool helps you sculpt your music effortlessly.
         </p>
     """, unsafe_allow_html=True)
-
-    if st.button("🎛️ Continue to Equalizer", key="to_equalizer"):
-        st.session_state.page = "equalizer"
-        st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("🔙 Back", key="back_to_home"):
+            st.session_state.page = "home"
+            st.rerun()
+    with col2:
+        if st.button("🎛️ Continue to Equalizer", key="to_equalizer"):
+            st.session_state.page = "equalizer"
+            st.rerun()
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
+
+    if st.button("🔙 Back", key="back_to_about"):
+        st.session_state.page = "about"
+        st.rerun()
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
@@ -167,6 +185,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
