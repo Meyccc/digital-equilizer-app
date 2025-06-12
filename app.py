@@ -6,11 +6,14 @@ import io
 import librosa
 import matplotlib.pyplot as plt
 
+# --- Page Config ---
 st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 
+# --- Session state to switch pages ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
+# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -26,38 +29,26 @@ st.markdown("""
         text-shadow: 0 0 15px #ff69b4;
     }
 
+    button {
+        background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
+        border: none !important;
+        padding: 0.8em 2em !important;
+        font-size: 1.2em !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 20px !important;
+        box-shadow: 0 0 12px #ff69b4;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: linear-gradient(90deg, #845ec2, #ff5f6d) !important;
+        color: black !important;
+    }
+
     .center {
         text-align: center;
         margin-top: 8em;
-    }
-
-    .button-center {
-        display: flex;
-        justify-content: center;
-        margin-top: 2em;
-    }
-
-    .stButton > button,
-    .stDownloadButton > button,
-    .stFileUploader > div,
-    .main-button button {
-        background: linear-gradient(90deg, #ff5f6d, #ff69b4);
-        border: none;
-        padding: 1.2em 3em;
-        font-size: 1.2em;
-        color: white;
-        font-weight: bold;
-        border-radius: 50px;
-        box-shadow: 0 0 25px #ff69b4;
-        transition: 0.3s ease;
-        text-align: center;
-    }
-
-    .stButton > button:hover,
-    .stDownloadButton > button:hover,
-    .main-button button:hover {
-        background: linear-gradient(90deg, #ff85c1, #ff69b4);
-        color: black;
     }
 
     .stSlider > div {
@@ -75,14 +66,23 @@ st.markdown("""
         background: #333;
     }
 
-    .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2em;
+    .stDownloadButton button {
+        background: #ff69b4 !important;
+        color: black !important;
+        font-weight: bold !important;
+        border-radius: 10px !important;
+        border: none !important;
+        box-shadow: 0 0 12px #ff69b4;
+    }
+
+    .stDownloadButton button:hover {
+        background: #ff85c1 !important;
+        color: #000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# --- Functions ---
 def load_audio(file):
     y, sr = librosa.load(file, sr=None, mono=True)
     return y, sr
@@ -92,67 +92,45 @@ def bandpass_filter(data, lowcut, highcut, fs, numtaps=101):
     return lfilter(taps, 1.0, data)
 
 def apply_equalizer(data, fs, gains):
-    bands = [(60, 250), (250, 4000), (4000, 10000)]
+    bands = [(60, 250), (250, 4000), (4000, 10000)]  # Bass, Mid, Treble
     processed = np.zeros_like(data)
     for (low, high), gain in zip(bands, gains):
         filtered = bandpass_filter(data, low, high, fs)
         processed += filtered * gain
     return processed
 
+# --- Home Page ---
 if st.session_state.page == "home":
-    st.markdown("""
-        <div class="center">
-            <h1>🎧 Digital Music Equalizer</h1>
-            <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<div class='button-center'>", unsafe_allow_html=True)
-    if st.button("Start Now", key="start_home"):
+    st.markdown("""<div class="center">""", unsafe_allow_html=True)
+    st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
+    if st.button("🚀 Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
+# --- About Page ---
 elif st.session_state.page == "about":
+    st.markdown("""<div class="center">""", unsafe_allow_html=True)
+    st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-        <div class="center">
-            <h1>ℹ️ About This App</h1>
-            <p style='font-size: 1.1em;'>
-            <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
-            🎶 <strong>What it does:</strong><br>
-            This app allows you to fine-tune your audio files by adjusting frequency bands—<em>Bass</em>, <em>Midrange</em>, and <em>Treble</em>—using professional-grade filters.<br><br>
-            🎚️ <strong>How it works:</strong><br>
-            The audio signal is split into frequency bands with digital filters (FIR bandpass filters), and you can boost or reduce each band independently.<br><br>
-            💾 <strong>Supported Files:</strong><br>
-            • WAV or MP3 audio formats<br>
-            • Maximum file size: 100 MB<br><br>
-            📦 <strong>Features:</strong><br>
-            • Studio-inspired design<br>
-            • Real-time preview of your adjustments<br>
-            • Download your customized track in WAV format<br>
-            • Waveform visualization to monitor your sound<br><br>
-            🎧 Whether you're enhancing podcasts, remixing songs, or refining recordings—<br>
-            this equalizer gives you full control over your audio’s character.
-            </p>
-        </div>
+        <p style='font-size: 1.1em;'>
+        Welcome to the <strong>Digital Music Equalizer</strong> – your personal audio studio in the cloud!<br><br>
+        🎶 <strong>Upload</strong> your favorite track (WAV or MP3, up to 100 MB).<br>
+        🎚️ <strong>Adjust</strong> the bass, midrange, and treble frequencies using intuitive sliders.<br>
+        📥 <strong>Download</strong> the enhanced audio and enjoy your customized sound.<br><br>
+        Whether you want deeper bass for your workouts or sharper treble for acoustic tracks, this tool helps you sculpt your music effortlessly.
+        </p>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("⬅️ Back to Home"):
-            st.session_state.page = "home"
-            st.rerun()
-    with col2:
-        if st.button("Continue to Equalizer", key="to_equalizer"):
-            st.session_state.page = "equalizer"
-            st.rerun()
+    if st.button("🎛️ Continue to Equalizer", key="to_equalizer"):
+        st.session_state.page = "equalizer"
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
+# --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
-
-    if st.button("⬅️ Back to About"):
-        st.session_state.page = "about"
-        st.rerun()
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
@@ -171,11 +149,13 @@ elif st.session_state.page == "equalizer":
 
             output = apply_equalizer(data, fs, [bass, mid, treble])
 
+            # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
             st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
+            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
@@ -187,7 +167,6 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
-
 
 
 
