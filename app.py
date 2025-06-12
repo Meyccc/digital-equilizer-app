@@ -34,6 +34,12 @@ st.markdown("""
         margin-top: 8em;
     }
 
+    .button-center {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+    }
+
     .stButton > button,
     .stDownloadButton > button,
     .stFileUploader > div,
@@ -71,6 +77,12 @@ st.markdown("""
     .stSlider input[type=range]::-webkit-slider-runnable-track {
         background: #333;
     }
+
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2em;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -99,10 +111,12 @@ if st.session_state.page == "home":
             <p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>
         </div>
     """, unsafe_allow_html=True)
-    
+
+    st.markdown("<div class='button-center'>", unsafe_allow_html=True)
     if st.button("Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -129,13 +143,23 @@ elif st.session_state.page == "about":
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("Continue to Equalizer", key="to_equalizer"):
-        st.session_state.page = "equalizer"
-        st.rerun()
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("⬅️ Back to Home"):
+            st.session_state.page = "home"
+            st.rerun()
+    with col2:
+        if st.button("Continue to Equalizer", key="to_equalizer"):
+            st.session_state.page = "equalizer"
+            st.rerun()
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
+
+    if st.button("⬅️ Back to About"):
+        st.session_state.page = "about"
+        st.rerun()
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
@@ -172,6 +196,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
