@@ -128,17 +128,17 @@ with st.sidebar:
         st.markdown("""
         ### 🎓 About Us
 
-        Hello! We are students from **National University – Manila**, currently taking **Computer Engineering**. This project is part of our final requirement in **Digital Signal Processing (DSP)** under the guidance of our professor, **Dr. Jonathan V. Taylar**.
+        Hello! We are students from *National University – Manila*, currently taking *Computer Engineering*. This project is part of our final requirement in *Digital Signal Processing (DSP)* under the guidance of our professor, *Dr. Jonathan V. Taylar*.
 
         We are passionate about bringing theory into practical, real-world applications. Our project showcases how Digital Signal Processing can enhance everyday experiences—like listening to music—through smart, user-friendly technology. This Digital Music Equalizer lets users adjust bass, mid, and treble frequencies with ease, offering a hands-on demonstration of DSP in action.
 
-        **Meet the Team:**  
-        • **Lhian Xian Ascutia**  
-        • **Feb Althea G. Guevarra**  
-        • **Mae Anthoniette C. Navarro** 
-        • **Monica Graciel C. Pacurib**
+        *Meet the Team:*  
+        • *Lhian Xian Ascutia*  
+        • *Feb Althea G. Guevarra*  
+        • *Mae Anthoniette C. Navarro* 
+        • *Monica Graciel C. Pacurib*
 
-        Together, we are **Group 8 of COE221**, and we’re proud to combine our skills to deliver a meaningful and interactive audio experience.
+        Together, we are *Group 8 of COE221*, and we’re proud to combine our skills to deliver a meaningful and interactive audio experience.
         """)
 
     if st.button("📘 An Overview"):
@@ -166,9 +166,12 @@ def apply_equalizer(data, fs, gains):
     for (low, high), gain in zip(bands, gains):
         filtered = bandpass_filter(data, low, high, fs)
         processed += filtered * gain
+    max_val = np.max(np.abs(processed))
+    if max_val > 0:
+        processed /= max_val  # Normalize to avoid clipping
     return processed
 
-# --- Home Page ---
+# --- Pages ---
 if st.session_state.page == "home":
     st.markdown("""
         <div class="home-container">
@@ -184,7 +187,6 @@ if st.session_state.page == "home":
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- About Page ---
 elif st.session_state.page == "about":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
@@ -209,7 +211,6 @@ elif st.session_state.page == "about":
             st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
 
@@ -217,7 +218,7 @@ elif st.session_state.page == "equalizer":
 
     if uploaded_file is not None:
         file_size_mb = uploaded_file.size / (1024 * 1024)
-        if file_size_mb > 100:
+        if file_size_mb > 200:
             st.error("⚠️ File size exceeds 200 MB limit. Please upload a smaller file.")
         else:
             data, fs = load_audio(uploaded_file)
@@ -230,13 +231,11 @@ elif st.session_state.page == "equalizer":
 
             output = apply_equalizer(data, fs, [bass, mid, treble])
 
-            # Save and play
             buf = io.BytesIO()
             sf.write(buf, output, fs, format='WAV')
             st.audio(buf, format='audio/wav')
             st.download_button("⬇️ Download Processed Audio", buf.getvalue(), file_name="equalized_output.wav")
 
-            # Visualization
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
@@ -252,6 +251,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
