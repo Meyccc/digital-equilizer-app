@@ -13,7 +13,7 @@ st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles ---
+# --- Custom Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -29,26 +29,24 @@ st.markdown("""
         text-shadow: 0 0 15px #ff69b4;
     }
 
-    .main-button button {
+    .main-button button,
+    .stButton>button {
         background: linear-gradient(90deg, #ff5f6d, #845ec2);
         border: none;
-        padding: 1.2em 3em;
-        font-size: 1.5em;
+        padding: 0.9em 2.5em;
+        font-size: 1.2em;
         color: white;
         font-weight: bold;
-        border-radius: 25px;
-        box-shadow: 0 0 25px #ff69b4;
-        transition: 0.3s ease;
+        border-radius: 999px;
+        box-shadow: 0 0 20px #ff69b4;
+        transition: all 0.3s ease;
     }
 
-    .main-button button:hover {
+    .main-button button:hover,
+    .stButton>button:hover {
         background: linear-gradient(90deg, #845ec2, #ff5f6d);
         color: black;
-    }
-
-    .center {
-        text-align: center;
-        margin-top: 8em;
+        transform: scale(1.03);
     }
 
     .stSlider > div {
@@ -70,14 +68,21 @@ st.markdown("""
         background: #ff69b4;
         color: black;
         font-weight: bold;
-        border-radius: 10px;
+        border-radius: 999px;
         border: none;
         box-shadow: 0 0 12px #ff69b4;
+        padding: 0.8em 2.5em;
     }
 
     .stDownloadButton button:hover {
         background: #ff85c1;
         color: #000;
+        transform: scale(1.03);
+    }
+
+    .center {
+        text-align: center;
+        margin-top: 8em;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -104,7 +109,7 @@ if st.session_state.page == "home":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
-    if st.container().button("Start Now", key="start_home", help="Learn more first!", use_container_width=False):
+    if st.container().button("Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
@@ -117,27 +122,14 @@ elif st.session_state.page == "about":
         <p style='font-size: 1.1em;'>
         <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
         🎶 <strong>What it does:</strong><br>
-        This app allows you to fine-tune your audio files by adjusting frequency bands—<em>Bass</em>, <em>Midrange</em>, and <em>Treble</em>—using professional-grade filters.<br><br>
-        
-        🎚️ <strong>How it works:</strong><br>
-        The audio signal is split into frequency bands with digital filters (FIR bandpass filters), and you can boost or reduce each band independently.<br><br>
-
-        💾 <strong>Supported Files:</strong><br>
-        • WAV or MP3 audio formats<br>
-        • Maximum file size: 100 MB<br><br>
-        
-        📦 <strong>Features:</strong><br>
-        • Studio-inspired design<br>
-        • Real-time preview of your adjustments<br>
-        • Download your customized track in WAV format<br>
-        • Waveform visualization to monitor your sound<br><br>
-        
-        🎧 Whether you're enhancing podcasts, remixing songs, or refining recordings—<br>
-        this equalizer gives you full control over your audio’s character.
+        Fine-tune your audio by adjusting Bass, Midrange, and Treble using digital filters.<br><br>
+        💾 <strong>Supported:</strong> WAV or MP3 files under 100 MB<br>
+        📈 <strong>Features:</strong> Real-time preview, waveform visualization, studio feel<br><br>
+        Whether enhancing a podcast or remixing a song — you’re in control.
         </p>
     """, unsafe_allow_html=True)
 
-    if st.container().button("Continue to Equalizer", key="to_equalizer", use_container_width=False):
+    if st.container().button("Continue to Equalizer", key="to_equalizer"):
         st.session_state.page = "equalizer"
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
