@@ -70,15 +70,12 @@ st.markdown("""
     .home-description {
         font-size: 1.8em;
         color: #dddddd;
-        margin-bottom: 1.2em;
+        margin-bottom: 0.6em;
     }
 
-    .start-button-container {
-        margin-top: 2.5em;
-    }
-
-    .start-button-container button {
-        font-size: 2.5em !important;
+    .start-button {
+        margin-top: 0.1em;
+        text-align: center;
     }
 
     .stSlider > div {
@@ -135,16 +132,18 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-            <div class="start-button-container">
+            <div class="start-button">
+                <form action="#" method="post">
+                    <button type="submit" name="start" style="font-size: 1.5em;">🚀 Start Now</button>
+                </form>
+            </div>
+        </div>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🚀 Start Now", key="start_home"):
-            st.session_state.page = "about"
-            st.rerun()
-
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    # Handle the button press using Streamlit’s built-in method
+    if st.form("start_form"):
+        st.session_state.page = "about"
+        st.rerun()
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -214,6 +213,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
