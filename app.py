@@ -128,19 +128,19 @@ with st.sidebar:
         st.markdown("""
         ### 🎓 About Us
 
-        **INTRODUCTION**  
+        INTRODUCTION  
         Hello! We are students from National University – Manila, currently taking Computer Engineering. This project is part of our final requirement in Digital Signal Processing (DSP) under the guidance of our professor, Dr. Jonathan V. Taylar.
 
 We are passionate about bringing theory into practical, real-world applications. Our project showcases how Digital Signal Processing can enhance everyday experiences—like listening to music—through smart, user-friendly technology. This Digital Music Equalizer lets users adjust bass, mid, and treble frequencies with ease, offering a hands-on demonstration of DSP in action.
 
 
-        **The Creators:**  
+         The Creators: 
         • Ascutia, Lhian Xian  
         • Guevarra, Feb Althea G.  
         • Navarro, Mae Anthoniette C.  
         • Pacurib, Monica Graciel C.  
 
-        **Together, we are Group 8 of COE221, and we’re proud to combine our skills to deliver a meaningful and interactive audio experience.**
+        Together, we are Group 8 of COE221, and we’re proud to combine our skills to deliver a meaningful and interactive audio experience.
         """)
 
     if st.button("📘 An Overview"):
