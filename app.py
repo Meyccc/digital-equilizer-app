@@ -13,13 +13,13 @@ st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles with Background Image ---
+# --- Styles with Background Image from GitHub ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {{
-        background-image: url('https://raw.githubusercontent.com/your-username/your-repo/main/background.jpeg');
+        background-image: url('https://raw.githubusercontent.com/hotpinkdj/music-equalizer/main/background.jpeg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -158,6 +158,7 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
 
 
 
