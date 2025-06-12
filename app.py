@@ -7,14 +7,14 @@ import base64
 
 st.set_page_config(layout="wide")
 
-# Custom CSS with background and theme styling
-def local_css_with_bg(image_path):
+# Load and inject CSS for background and theme
+def load_css_with_background(image_path):
     with open(image_path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
     css = f"""
     <style>
     .stApp {{
-        background-image: url("data:image/jpg;base64,{encoded}");
+        background-image: url("data:image/png;base64,{encoded}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -29,38 +29,38 @@ def local_css_with_bg(image_path):
         text-align: center;
         color: white;
     }}
-    .start-button {{
+    .start-btn {{
         font-size: 2rem;
-        border-radius: 50px;
-        padding: 1em 2em;
+        padding: 1rem 3rem;
         background: linear-gradient(to right, #a855f7, #ec4899);
         color: white;
         border: none;
+        border-radius: 2rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 30px;
+        transition: transform 0.2s ease;
     }}
-    .start-button:hover {{
+    .start-btn:hover {{
         transform: scale(1.05);
         background: linear-gradient(to right, #ec4899, #a855f7);
     }}
     .slider-label {{
-        font-size: 1.5rem;
-        color: #ec4899;
-        margin-top: 1.5rem;
-        font-weight: bold;
-    }}
-    .stSlider > div {{
+        font-size: 1.3rem;
         color: #e879f9;
+        font-weight: 600;
+        margin-top: 1rem;
+    }}
+    input[type=range] {{
+        accent-color: #e879f9;
+        height: 10px;
     }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
 
-# Apply CSS with your background image
-local_css_with_bg("background.jpg")
+# Load the background
+load_css_with_background("e818d5f8-b1d0-45aa-a633-e9c61552732d.png")  # Adjust filename if needed
 
-# Session state to manage page
+# Session state setup
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
@@ -68,21 +68,25 @@ if "page" not in st.session_state:
 def show_homepage():
     st.markdown(f"""
     <div class="centered">
-        <h1 style="font-size: 3rem; font-weight: bold;">🎧 Digital Music Equalizer</h1>
+        <h1 style="font-size: 4rem; font-weight: 800;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.5rem;">Shape your sound with studio-level precision.</p>
-        <button class="start-button" onclick="window.location.reload(); document.cookie = 'streamlit_page=equalizer';">
-            🎵 Start Now
-        </button>
+        <form action="" method="post">
+            <button class="start-btn" name="start" type="submit">🎵 Start Now</button>
+        </form>
     </div>
     """, unsafe_allow_html=True)
 
-    # Fallback for environments that don't support JS
-    if st.button("🎵 Start Now"):
+    # Detect the button click via query param
+    if st.query_params.get("start") is not None or st.session_state.get("start_pressed"):
         st.session_state.page = "equalizer"
 
-# Equalizer Page
+    # Fallback: Button (for environments with no JS/form support)
+    if st.button("Start Now (Fallback)", key="start_fallback"):
+        st.session_state.page = "equalizer"
+
+# Equalizer
 def show_equalizer():
-    st.markdown("<h1 style='color:white; font-size:2.5rem; text-align:center;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center; color:white; font-size:3rem;'>🎛️ Music Equalizer</h1>", unsafe_allow_html=True)
 
     if st.button("🔙 Back to Home"):
         st.session_state.page = "home"
@@ -127,8 +131,9 @@ def show_equalizer():
 # Routing
 if st.session_state.page == "home":
     show_homepage()
-elif st.session_state.page == "equalizer":
+else:
     show_equalizer()
+
 
 
 
