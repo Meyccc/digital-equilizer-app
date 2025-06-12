@@ -19,70 +19,70 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a, #1a001a);
+        background: linear-gradient(135deg, #1e1e2f, #2e003e);
         color: white;
         font-family: 'Orbitron', sans-serif;
+        text-align: center;
     }
 
-    h1, h2, h3 {
+    h1, h2, h3, p {
+        text-align: center;
         color: white;
-        text-shadow: 0 0 15px #ff69b4;
+        font-size: 1.5em;
     }
 
     .main-button button,
-    .stButton>button {
-        background: linear-gradient(90deg, #ff5f6d, #845ec2);
+    .stButton>button,
+    .stDownloadButton button {
+        background: linear-gradient(90deg, #ff9ebc, #d47bc0);
         border: none;
-        padding: 0.9em 2.5em;
+        padding: 1.0em 2.8em;
         font-size: 1.2em;
         color: white;
         font-weight: bold;
         border-radius: 999px;
-        box-shadow: 0 0 20px #ff69b4;
+        box-shadow: 0 0 15px rgba(255, 158, 188, 0.3);
         transition: all 0.3s ease;
+        text-align: center;
+        margin: 1em auto;
+        display: block;
     }
 
     .main-button button:hover,
-    .stButton>button:hover {
-        background: linear-gradient(90deg, #845ec2, #ff5f6d);
+    .stButton>button:hover,
+    .stDownloadButton button:hover {
+        background: linear-gradient(90deg, #d47bc0, #ff9ebc);
         color: black;
         transform: scale(1.03);
     }
 
     .stSlider > div {
-        background-color: #111;
+        background-color: #1a1a2a;
         border-radius: 10px;
         padding: 0.5em;
     }
 
+    .stSlider label {
+        font-size: 1.1em;
+        color: #f5f5f5;
+    }
+
     .stSlider input[type=range]::-webkit-slider-thumb {
-        background: #ff69b4;
-        box-shadow: 0 0 12px #ff69b4;
+        background: #ff9ebc;
+        box-shadow: 0 0 8px #ff9ebc;
     }
 
     .stSlider input[type=range]::-webkit-slider-runnable-track {
-        background: #333;
-    }
-
-    .stDownloadButton button {
-        background: #ff69b4;
-        color: black;
-        font-weight: bold;
-        border-radius: 999px;
-        border: none;
-        box-shadow: 0 0 12px #ff69b4;
-        padding: 0.8em 2.5em;
-    }
-
-    .stDownloadButton button:hover {
-        background: #ff85c1;
-        color: #000;
-        transform: scale(1.03);
+        background: #444;
     }
 
     .center {
         text-align: center;
-        margin-top: 8em;
+        margin-top: 6em;
+    }
+
+    .block-container {
+        padding-top: 2rem;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -108,8 +108,8 @@ def apply_equalizer(data, fs, gains):
 if st.session_state.page == "home":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
-    if st.container().button("Start Now", key="start_home"):
+    st.markdown("<p>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
+    if st.button("Start Now", key="start_home"):
         st.session_state.page = "about"
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
@@ -119,24 +119,23 @@ elif st.session_state.page == "about":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-        <p style='font-size: 1.1em;'>
-        <strong>Welcome to the Digital Music Equalizer!</strong><br><br>
+        <p>
         🎶 <strong>What it does:</strong><br>
-        Fine-tune your audio by adjusting Bass, Midrange, and Treble using digital filters.<br><br>
+        Fine-tune your audio by adjusting Bass, Midrange, and Treble.<br><br>
         💾 <strong>Supported:</strong> WAV or MP3 files under 100 MB<br>
-        📈 <strong>Features:</strong> Real-time preview, waveform visualization, studio feel<br><br>
+        📈 <strong>Features:</strong> Real-time preview, waveform display, studio feel<br><br>
         Whether enhancing a podcast or remixing a song — you’re in control.
         </p>
     """, unsafe_allow_html=True)
 
-    if st.container().button("Continue to Equalizer", key="to_equalizer"):
+    if st.button("Continue to Equalizer", key="to_equalizer"):
         st.session_state.page = "equalizer"
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
-    st.title("🎛️ Digital Music Equalizer")
+    st.markdown("<h1>🎛️ Digital Music Equalizer</h1>", unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
@@ -165,13 +164,13 @@ elif st.session_state.page == "equalizer":
             st.subheader("🔊 Processed Track Waveform")
             fig, ax = plt.subplots(figsize=(10, 4))
             time = np.linspace(0, len(output) / fs, num=len(output))
-            ax.plot(time, output, color="#ff69b4", linewidth=0.5)
-            ax.set_title("Processed Audio", fontsize=12, color='#ff69b4')
+            ax.plot(time, output, color="#ff9ebc", linewidth=0.5)
+            ax.set_title("Processed Audio", fontsize=14, color='#ff9ebc')
             ax.set_xlabel("Time [s]", color='white')
             ax.set_ylabel("Amplitude", color='white')
-            ax.set_facecolor("#0a0a0a")
+            ax.set_facecolor("#1e1e2f")
             ax.tick_params(colors='white')
-            fig.patch.set_facecolor("#0a0a0a")
+            fig.patch.set_facecolor("#1e1e2f")
             st.pyplot(fig)
 
 
