@@ -13,7 +13,14 @@ st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Background + Styles ---
+# --- Session state for info toggles ---
+if "show_about_us" not in st.session_state:
+    st.session_state["show_about_us"] = False
+
+if "show_overview" not in st.session_state:
+    st.session_state["show_overview"] = False
+
+# --- Styles ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -22,6 +29,7 @@ st.markdown("""
         background-image: url('https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg');
         background-size: cover;
         background-position: center;
+        background-attachment: fixed;
         color: white;
         font-family: 'Orbitron', sans-serif;
     }
@@ -75,13 +83,11 @@ st.markdown("""
         color: #dddddd;
         margin-bottom: 0.5em;
     }
-
     .start-button {
         font-size: 1.8em;
         margin-top: 0.1em;
         text-align: center;
     }
-
     .stSlider > div {
         background-color: #111;
         border-radius: 10px;
@@ -113,12 +119,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- "About Us" Sidebar Toggle ---
+# --- Sidebar Info Buttons ---
 with st.sidebar:
     if st.button("ℹ️ About Us"):
-        st.session_state["show_about_us"] = not st.session_state.get("show_about_us", False)
+        st.session_state["show_about_us"] = not st.session_state["show_about_us"]
 
-    if st.session_state.get("show_about_us", False):
+    if st.session_state["show_about_us"]:
         st.markdown("""
         ### 🎓 About Us
 
@@ -132,6 +138,16 @@ with st.sidebar:
         • Pacurib, Monica Graciel C.  
 
         **GROUP - 8 | COE221**
+        """)
+
+    if st.button("📘 An Overview"):
+        st.session_state["show_overview"] = not st.session_state["show_overview"]
+
+    if st.session_state["show_overview"]:
+        st.markdown("""
+        ### 📘 An Overview
+
+        This is a Final Requirement for Digital Signal Processing (DSP) where this project is about making a digital equalizer that lets people change how music sounds by adjusting the bass, mid, and treble parts. We use DSP (Digital Signal Processing) to split the sound into these parts and change them using filters. It builds a simple website where users can upload a song, move sliders, and hear the new version. It shows how DSP can be used in real life to improve sound.
         """)
 
 # --- Functions ---
