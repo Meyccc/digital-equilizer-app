@@ -77,35 +77,6 @@ st.markdown("""
         margin-top: 0.1em;
         text-align: center;
     }
-
-    .stSlider > div {
-        background-color: #111;
-        border-radius: 10px;
-        padding: 0.5em;
-    }
-
-    .stSlider input[type=range]::-webkit-slider-thumb {
-        background: #ff69b4;
-        box-shadow: 0 0 12px #ff69b4;
-    }
-
-    .stSlider input[type=range]::-webkit-slider-runnable-track {
-        background: #333;
-    }
-
-    .stDownloadButton button {
-        background: #ff69b4 !important;
-        color: black !important;
-        font-weight: bold !important;
-        border-radius: 10px !important;
-        border: none !important;
-        box-shadow: 0 0 12px #ff69b4;
-    }
-
-    .stDownloadButton button:hover {
-        background: #ff85c1 !important;
-        color: #000 !important;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -132,18 +103,14 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-            <div class="start-button">
-                <form action="#" method="post">
-                    <button type="submit" name="start" style="font-size: 1.5em;">🚀 Start Now</button>
-                </form>
-            </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Handle the button press using Streamlit’s built-in method
-    if st.form("start_form"):
-        st.session_state.page = "about"
-        st.rerun()
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🚀 Start Now", key="start_home"):
+            st.session_state.page = "about"
+            st.rerun()
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -213,6 +180,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
