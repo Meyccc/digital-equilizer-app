@@ -57,26 +57,27 @@ def local_css_with_bg(image_path):
     """
     st.markdown(css, unsafe_allow_html=True)
 
-# Apply CSS
-local_css_with_bg("background.jpg")  # make sure your image is named "background.jpg"
+# Apply CSS with your background image
+local_css_with_bg("background.jpg")
 
-# Session state for page navigation
+# Session state to manage page
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# Homepage with centered large Start button
+# Homepage
 def show_homepage():
     st.markdown(f"""
     <div class="centered">
         <h1 style="font-size: 3rem; font-weight: bold;">🎧 Digital Music Equalizer</h1>
         <p style="font-size: 1.5rem;">Shape your sound with studio-level precision.</p>
-        <form action="" method="post">
-            <button class="start-button" type="submit" name="start">🎵 Start Now</button>
-        </form>
+        <button class="start-button" onclick="window.location.reload(); document.cookie = 'streamlit_page=equalizer';">
+            🎵 Start Now
+        </button>
     </div>
     """, unsafe_allow_html=True)
 
-    if st.experimental_get_query_params().get("start") or st.form_submit_button("start"):
+    # Fallback for environments that don't support JS
+    if st.button("🎵 Start Now"):
         st.session_state.page = "equalizer"
 
 # Equalizer Page
@@ -128,6 +129,7 @@ if st.session_state.page == "home":
     show_homepage()
 elif st.session_state.page == "equalizer":
     show_equalizer()
+
 
 
 
