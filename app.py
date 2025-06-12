@@ -32,18 +32,24 @@ st.markdown("""
     button {
         background: linear-gradient(90deg, #ff5f6d, #845ec2) !important;
         border: none !important;
-        padding: 0.8em 2em !important;
+        padding: 0.8em 2.5em !important;
         font-size: 1.4em !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 20px !important;
         box-shadow: 0 0 12px #ff69b4;
         transition: background 0.3s ease;
+        margin-top: 1em !important;
     }
 
     button:hover {
         background: linear-gradient(90deg, #845ec2, #ff5f6d) !important;
         color: black !important;
+    }
+
+    .center {
+        text-align: center;
+        margin-top: 8em;
     }
 
     .home-container {
@@ -65,13 +71,7 @@ st.markdown("""
     .home-description {
         font-size: 1.8em;
         color: #dddddd;
-        margin-bottom: 1em;
-    }
-
-    .start-button-container {
-        margin-top: 1em;
-        font-size: 1.8em;
-        margin-bottom: 1em;
+        margin-bottom: 0.5em;
     }
 
     .stSlider > div {
@@ -128,19 +128,15 @@ if st.session_state.page == "home":
         <div class="home-container">
             <div class="home-title">🎧 Digital Music Equalizer</div>
             <div class="home-description">Shape your sound with studio-level precision.</div>
-            <div class="start-button-container">
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
+    center_col = st.columns([1, 1, 1])[1]
+    with center_col:
         if st.button("🚀 Start Now", key="start_home"):
             st.session_state.page = "about"
             st.rerun()
 
-    st.markdown("""
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- About Page ---
 elif st.session_state.page == "about":
@@ -149,7 +145,7 @@ elif st.session_state.page == "about":
     st.markdown("""
         <p style='font-size: 1.1em;'>
         Welcome to the <strong>Digital Music Equalizer</strong> – your personal audio studio in the cloud!<br><br>
-        🎶 <strong>Upload</strong> your favorite track (WAV or MP3, up to 100 MB).<br>
+        🎶 <strong>Upload</strong> your favorite track (WAV or MP3, up to 200 MB).<br>
         🎚️ <strong>Adjust</strong> the bass, midrange, and treble frequencies using intuitive sliders.<br>
         📥 <strong>Download</strong> the enhanced audio and enjoy your customized sound.<br><br>
         Whether you want deeper bass for your workouts or sharper treble for acoustic tracks, this tool helps you sculpt your music effortlessly.
@@ -176,7 +172,7 @@ elif st.session_state.page == "equalizer":
     if uploaded_file is not None:
         file_size_mb = uploaded_file.size / (1024 * 1024)
         if file_size_mb > 100:
-            st.error("⚠️ File size exceeds 100 MB limit. Please upload a smaller file.")
+            st.error("⚠️ File size exceeds 200 MB limit. Please upload a smaller file.")
         else:
             data, fs = load_audio(uploaded_file)
             st.audio(uploaded_file)
@@ -210,7 +206,6 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
-
 
 
 
