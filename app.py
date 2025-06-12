@@ -128,8 +128,11 @@ with st.sidebar:
         st.markdown("""
         ### 🎓 About Us
 
-        **Overview:**  
-        This is a Final Requirement for Digital Signal Processing (DSP) where this project is about making a digital equalizer that lets people change how music sounds by adjusting the bass, mid, and treble parts. We use DSP (Digital Signal Processing) to split the sound into these parts and change them using filters. It builds a simple website where users can upload a song, move sliders, and hear the new version. It shows how DSP can be used in real life to improve sound.
+        **INTRODUCTION**  
+        Hello! We are students from National University – Manila, currently taking Computer Engineering. This project is part of our final requirement in Digital Signal Processing (DSP) under the guidance of our professor, Dr. Jonathan V. Taylar.
+
+We are passionate about bringing theory into practical, real-world applications. Our project showcases how Digital Signal Processing can enhance everyday experiences—like listening to music—through smart, user-friendly technology. This Digital Music Equalizer lets users adjust bass, mid, and treble frequencies with ease, offering a hands-on demonstration of DSP in action.
+
 
         **The Creators:**  
         • Ascutia, Lhian Xian  
@@ -137,7 +140,7 @@ with st.sidebar:
         • Navarro, Mae Anthoniette C.  
         • Pacurib, Monica Graciel C.  
 
-        **GROUP - 8 | COE221**
+        **Together, we are Group 8 of COE221, and we’re proud to combine our skills to deliver a meaningful and interactive audio experience.**
         """)
 
     if st.button("📘 An Overview"):
