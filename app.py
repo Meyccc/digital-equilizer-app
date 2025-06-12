@@ -73,7 +73,11 @@ st.markdown("""
         color: #dddddd;
         margin-bottom: 0.5em;
     }
-
+    .start-button {
+     font-size: 1.8em;
+        margin-top: 0.1em;
+        text-align: center;
+    }
     .stSlider > div {
         background-color: #111;
         border-radius: 10px;
