@@ -27,6 +27,20 @@ st.markdown("""
     h1, h2, h3 {
         color: white;
         text-shadow: 0 0 15px #ff69b4;
+        text-align: center;
+    }
+
+    .home-title {
+        font-size: 3em;
+        text-align: center;
+        margin-top: 2em;
+    }
+
+    .home-description {
+        font-size: 1.5em;
+        text-align: center;
+        margin-top: 1em;
+        color: #ddd;
     }
 
     button {
@@ -46,9 +60,10 @@ st.markdown("""
         color: black !important;
     }
 
-    .center {
-        text-align: center;
-        margin-top: 8em;
+    .center-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 3em;
     }
 
     .stSlider > div {
@@ -79,12 +94,6 @@ st.markdown("""
         background: #ff85c1 !important;
         color: #000 !important;
     }
-
-    .center-button {
-        display: flex;
-        justify-content: center;
-        margin-top: 2em;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -107,10 +116,8 @@ def apply_equalizer(data, fs, gains):
 
 # --- Home Page ---
 if st.session_state.page == "home":
-    st.markdown("""<div class="center">""", unsafe_allow_html=True)
-    st.markdown("<h1>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 1.2em;'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
-    st.markdown("""</div>""", unsafe_allow_html=True)
+    st.markdown("<h1 class='home-title'>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='home-description'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
     st.markdown('<div class="center-button">', unsafe_allow_html=True)
     if st.button("🚀 Start Now", key="start_home"):
         st.session_state.page = "about"
@@ -122,7 +129,7 @@ elif st.session_state.page == "about":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-        <p style='font-size: 1.1em;'>
+        <p style='font-size: 1.1em; text-align:center;'>
         Welcome to the <strong>Digital Music Equalizer</strong> – your personal audio studio in the cloud!<br><br>
         🎶 <strong>Upload</strong> your favorite track (WAV or MP3, up to 100 MB).<br>
         🎚️ <strong>Adjust</strong> the bass, midrange, and treble frequencies using intuitive sliders.<br>
