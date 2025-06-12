@@ -13,13 +13,15 @@ st.set_page_config(page_title="Digital Music Equalizer", layout="centered")
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# --- Styles ---
+# --- Styles with background image ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a, #1a001a);
+        background-image: url("https://raw.githubusercontent.com/Meyccc/digital-equilizer-app/main/background.jpg");
+        background-size: cover;
+        background-position: center;
         color: white;
         font-family: 'Orbitron', sans-serif;
     }
@@ -73,11 +75,13 @@ st.markdown("""
         color: #dddddd;
         margin-bottom: 0.5em;
     }
+
     .start-button {
-     font-size: 1.8em;
+        font-size: 1.8em;
         margin-top: 0.1em;
         text-align: center;
     }
+
     .stSlider > div {
         background-color: #111;
         border-radius: 10px;
@@ -210,6 +214,7 @@ elif st.session_state.page == "equalizer":
     if st.button("⬅️ Back", key="back_about"):
         st.session_state.page = "about"
         st.rerun()
+
 
 
 
