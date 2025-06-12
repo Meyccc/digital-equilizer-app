@@ -27,20 +27,6 @@ st.markdown("""
     h1, h2, h3 {
         color: white;
         text-shadow: 0 0 15px #ff69b4;
-        text-align: center;
-    }
-
-    .home-title {
-        font-size: 3em;
-        text-align: center;
-        margin-top: 2em;
-    }
-
-    .home-description {
-        font-size: 1.5em;
-        text-align: center;
-        margin-top: 1em;
-        color: #ddd;
     }
 
     button {
@@ -60,10 +46,31 @@ st.markdown("""
         color: black !important;
     }
 
-    .center-button {
+    .center {
+        text-align: center;
+        margin-top: 8em;
+    }
+
+    .home-container {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        margin-top: 3em;
+        height: 85vh;
+        text-align: center;
+    }
+
+    .home-title {
+        font-size: 4em;
+        color: white;
+        text-shadow: 0 0 15px #ff69b4;
+        margin-bottom: 0.2em;
+    }
+
+    .home-description {
+        font-size: 1.8em;
+        color: #dddddd;
+        margin-bottom: 2em;
     }
 
     .stSlider > div {
@@ -116,20 +123,24 @@ def apply_equalizer(data, fs, gains):
 
 # --- Home Page ---
 if st.session_state.page == "home":
-    st.markdown("<h1 class='home-title'>🎧 Digital Music Equalizer</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='home-description'>Shape your sound with studio-level precision.</p>", unsafe_allow_html=True)
-    st.markdown('<div class="center-button">', unsafe_allow_html=True)
-    if st.button("🚀 Start Now", key="start_home"):
-        st.session_state.page = "about"
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="home-container">
+            <div class="home-title">🎧 Digital Music Equalizer</div>
+            <div class="home-description">Shape your sound with studio-level precision.</div>
+        </div>
+    """, unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🚀 Start Now", key="start_home"):
+            st.session_state.page = "about"
+            st.rerun()
 
 # --- About Page ---
 elif st.session_state.page == "about":
     st.markdown("""<div class="center">""", unsafe_allow_html=True)
     st.markdown("<h1>ℹ️ About This App</h1>", unsafe_allow_html=True)
     st.markdown("""
-        <p style='font-size: 1.1em; text-align:center;'>
+        <p style='font-size: 1.1em;'>
         Welcome to the <strong>Digital Music Equalizer</strong> – your personal audio studio in the cloud!<br><br>
         🎶 <strong>Upload</strong> your favorite track (WAV or MP3, up to 100 MB).<br>
         🎚️ <strong>Adjust</strong> the bass, midrange, and treble frequencies using intuitive sliders.<br>
@@ -137,25 +148,21 @@ elif st.session_state.page == "about":
         Whether you want deeper bass for your workouts or sharper treble for acoustic tracks, this tool helps you sculpt your music effortlessly.
         </p>
     """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("🔙 Back", key="back_to_home"):
-            st.session_state.page = "home"
-            st.rerun()
+    col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("🎛️ Continue to Equalizer", key="to_equalizer"):
             st.session_state.page = "equalizer"
             st.rerun()
+    with col1:
+        if st.button("⬅️ Back", key="back_home"):
+            st.session_state.page = "home"
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Equalizer Page ---
 elif st.session_state.page == "equalizer":
     st.title("🎛️ Digital Music Equalizer")
-
-    if st.button("🔙 Back", key="back_to_about"):
-        st.session_state.page = "about"
-        st.rerun()
 
     uploaded_file = st.file_uploader("🎵 Upload your audio track (WAV or MP3)", type=["wav", "mp3"])
 
@@ -192,6 +199,10 @@ elif st.session_state.page == "equalizer":
             ax.tick_params(colors='white')
             fig.patch.set_facecolor("#0a0a0a")
             st.pyplot(fig)
+
+    if st.button("⬅️ Back", key="back_about"):
+        st.session_state.page = "about"
+        st.rerun()
 
 
 
